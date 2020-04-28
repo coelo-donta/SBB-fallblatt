@@ -1,0 +1,57 @@
+extends structure
+block content
+  .row
+    .col-md-12
+      h4 Mode
+      select#mode
+        option(value="static") Statique
+        option(value="turn") Pas à pas
+        option(value="random") Aléatoire
+  .row#turnDurationLine
+    .col-md-12
+      h4 Duration
+      select#turnDuration
+        option(value="5") 5 seconds
+        option(value="10", selected) 10 seconds
+        option(value="30") 30 seconds
+        option(value="60") 1 minute
+        option(value="300") 5 minutes
+        option(value="600") 10 minutes
+  .row#turnVariationLine
+    .col-md-12
+      h4 Variation
+      select#turnVariation
+        option(value="0", selected) 0 seconds
+        option(value="1") 1 seconds
+        option(value="5") 5 seconds
+        option(value="10") 10 seconds
+        option(value="30") 30 seconds
+        option(value="60") 1 minute
+        option(value="300") 5 minute
+        option(value="600") 10 minute
+  .row#randomDurationLine
+    .col-md-12
+      h4 Duration
+      select#randomDuration
+        option(value="5") 5 seconds
+        option(value="10", selected) 10 seconds
+        option(value="30") 30 seconds
+        option(value="60") 1 minute
+        option(value="300") 5 minutes
+        option(value="600") 10 minutes
+  .row#randomVariationLine
+    .col-md-12
+      h4 Variation
+      select#randomVariation
+        option(value="0", selected) 0 seconds
+        option(value="1") 1 seconds
+        option(value="5") 5 seconds
+        option(value="10") 10 seconds
+        option(value="30") 30 seconds
+        option(value="60") 1 minute
+        option(value="300") 5 minute
+        option(value="600") 10 minute
+  .row
+    .col-md-12
+      h4 Message
+      #modules

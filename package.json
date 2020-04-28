@@ -1,0 +1,35 @@
+{
+  "name": "fallblatt-module",
+  "version": "1.0.0",
+  "description": "Software to controll SBB Fallbaltt",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harkle/fallblatt-module.git"
+  },
+  "author": "Lionel Tardy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harkle/fallblatt-module/issues"
+  },
+  "homepage": "https://github.com/harkle/fallblatt-module#readme",
+  "dependencies": {
+    "bootstrap-styl": "^5.0.8",
+    "colors": "^1.2.0",
+    "express": "^4.16.2",
+    "nib": "^1.1.2",
+    "pug": "^2.0.1",
+    "serialport": "^6.1.1",
+    "socket.io": "^2.0.4",
+    "stylus": "^0.54.5",
+    "vorpal": "^1.12.0"
+  },
+  "devDependencies": {
+    "bufferutil": "^4.0.1",
+    "electron-rebuild": "^1.10.1",
+    "utf-8-validate": "^5.0.2"
+  }
+}

@@ -1,0 +1,31 @@
+doctype
+html(lang='fr')
+  head
+    meta(name='viewport', content='width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no')
+    title Fallblatt SBB
+    script(src='/socket.io/socket.io.js')
+    script(src='/scripts/jquery.js')
+    script(src='/scripts/script.js')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body(class=page)
+    header
+      .container
+        .row
+          .col-md-12
+            h1
+              | Fallblatt 
+              small
+                | module 
+                span.info-address
+        .row
+          .col-md-12
+            include nav.pug
+    section
+      .container
+        .row
+          .col-md-12
+            block content
+    footer
+      .container
+        p 2018, Lionel Tardy
