@@ -126,4 +126,36 @@ module.exports = class Module extends ModuleController {
       this.turnPosition();
     }, this.turnDuration + Math.floor(Math.random() * this.turnVariation));
   }
+
+  time(action, duration = 10000, variation = 0) {
+    this.timeDuration = duration
+    this.timeVariation = variation;
+    switch (action) {
+      case 'start':
+        clearTimeout(this.randomTimeout);
+        clearTimeout(this.turnTimeout);
+        clearTimeout(this.timeTimeout);
+        this.timePosition();
+        this.switchMode('time');
+        break;
+      case 'stop':
+        clearTimeout(this.timeTimeout);
+        this.switchMode('static');
+        break;
+    }
+  }
+
+  timePosition() {
+    this.timeTimeout = setInterval(() => {
+      //if (!this.isReady) return;
+      var today = new Date();
+      var minutes = today.getMinutes();
+      var position = (minutes + 31)%62;
+      if (minutes < 31) {
+          position = position - 1;
+      };
+      super.move(position);
+      this.timePosition();
+    }, 5000);
+  }
 };

@@ -89,4 +89,12 @@ vorpal
     callback();
   });
 
+vorpal
+  .command('time <action> [duration] [variation]')
+  .description('display the time')
+  .action(function(args, callback) {
+    Actions.time(args.action, args.duration, args.variation);
+    callback();
+  });
+
 vorpal.delimiter('fallblatt >');

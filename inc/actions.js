@@ -69,8 +69,8 @@ module.exports = class Actions {
       vorpal.log(colors.magenta('address\t\t') + this.moduleInstance.address);
       vorpal.log(colors.magenta('type\t\t') + this.moduleInstance.type);
       vorpal.log(colors.magenta('mode\t\t') + this.moduleInstance.mode);
-      vorpal.log(colors.magenta('duration\t') + ((this.moduleInstance.mode == 'turn') ? this.moduleInstance.turnDuration : this.moduleInstance.randomDuration) / 1000);
-      vorpal.log(colors.magenta('variation\t') + ((this.moduleInstance.mode == 'turn') ? this.moduleInstance.turnVariation : this.moduleInstance.randomVariation) / 1000);
+      vorpal.log(colors.magenta('duration\t') + ((this.moduleInstance.mode == 'turn') ? this.moduleInstance.turnDuration : (this.moduleInstance.mode == 'random') ? this.moduleInstance.randomDuration : this.moduleInstance.timeDuration) / 1000);
+      vorpal.log(colors.magenta('variation\t') + ((this.moduleInstance.mode == 'turn') ? this.moduleInstance.turnVariation : (this.moduleInstance.mode == 'random') ? this.moduleInstance.randomVariation : this.moduleInstance.timeVariation) / 1000);
       vorpal.log(colors.magenta('position\t') + this.moduleInstance.position);
     } else {
       let status = {
@@ -175,5 +175,14 @@ module.exports = class Actions {
     this.moduleInstance.turn(action, duration * 1000, variation * 1000);
 
     vorpal.log(colors.magenta('turn mode set to "' + action + '"'));
+  }
+
+  static time(action, duration = 5, variation = 0) {
+    if (!this.isReady) return;
+    var today = new Date();
+    var minutes = today.getMinutes();
+    this.moduleInstance.time(action, duration * 1000, variation * 1000);
+
+    vorpal.log(colors.magenta('time is "' + minutes + '"'));
   }
 }

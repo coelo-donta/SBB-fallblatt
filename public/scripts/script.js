@@ -17,7 +17,7 @@ $(function () {
       $('#mode').val(data.mode);
       $('#module').val(data.position);
 
-      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine').hide()
+      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine, #timeVariationLine, #timeDurationLine').hide()
 
       console.log(data);
       if (data.mode == 'turn') {
@@ -31,6 +31,13 @@ $(function () {
         $('#randomDuration').val(data.randomDuration);
         $('#randomVariation').val(data.randomVariation);
       }
+
+      if (data.mode == 'time') {
+        $('#timeDurationLine, #timeVariationLine').show();
+        $('#timeDuration').val(data.timeDuration);
+        $('#timeVariation').val(data.timeVariation);
+      }
+
     } else if ($('body').hasClass('information')) {
       $('#info-status, #info-serial, #info-network').removeClass('text-success, text-danger');
 
@@ -41,8 +48,8 @@ $(function () {
       $('#info-type').text(data.type);
       $('#info-mode').text(data.mode);
       $('#info-position').text(data.position);
-      $('#info-duration').text((data.mode == 'turn') ? data.turnDuration : data.randomDuration);
-      $('#info-variation').text((data.mode == 'turn') ? data.turnVariation : data.randomVariation);
+      $('#info-duration').text((data.mode == 'turn') ? data.turnDuration : (data.mode == 'turn') ? data.randomDuration : data.timeDuration);
+      $('#info-variation').text((data.mode == 'turn') ? data.turnVariation : (data.mode == 'turn') ? data.randomVariation : data.timeVariation);
     }
 
     $('.info-address').text(data.address);
@@ -63,12 +70,12 @@ $(function () {
     socket.emit('status');
     socket.emit('list');
 
-    $('body').on('change', '#mode, #turnDuration, #turnVariation, #randomDuration, #randomVariation', function () {
+    $('body').on('change', '#mode, #turnDuration, #turnVariation, #randomDuration, #randomVariation, #timeDuration, #timeVariation', function () {
       var mode = $('#mode').val();
       var action = (mode == 'static') ? 'stop' : 'start';
       var targetFields;
 
-      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine').hide()
+      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine, #timeVariationLine, #timeDurationLine').hide()
 
       if (mode == 'turn') {
         targetFields = $('#turnVariationLine, #turnDurationLine');
@@ -76,9 +83,13 @@ $(function () {
       } else if (mode == 'random') {
         targetFields = $('#randomVariationLine, #randomDurationLine');
         socket.emit('random', {action: action, duration: $('#randomDuration').val(), variation: $('#randomVariation').val()});
+      } else if (mode == 'time') {
+        targetFields = $('#timeVariationLine, #timeDurationLine');
+        socket.emit('time', {action: action, duration: $('#timeDuration').val(), variation: $('#timeVariation').val()});
       } else {
         socket.emit('turn', {action: 'stop'});
         socket.emit('random', {action: 'stop'});
+        socket.emit('time', {action: 'stop'});
       }
 
       if (action == 'start') {
