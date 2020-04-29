@@ -65,6 +65,7 @@ module.exports = class Module extends ModuleController {
       case 'start':
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
+        clearTimeout(this.timeTimeout);
         this.selectRandomPosition(duration, variation);
         this.switchMode('random');
         break;
@@ -109,6 +110,7 @@ module.exports = class Module extends ModuleController {
       case 'start':
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
+        clearTimeout(this.timeTimeout);
         this.turnPosition(duration, variation);
         this.switchMode('turn');
         break;
@@ -128,8 +130,6 @@ module.exports = class Module extends ModuleController {
   }
 
   time(action, duration = 10000, variation = 0) {
-    this.timeDuration = duration
-    this.timeVariation = variation;
     switch (action) {
       case 'start':
         clearTimeout(this.randomTimeout);
@@ -147,7 +147,6 @@ module.exports = class Module extends ModuleController {
 
   timePosition() {
     this.timeTimeout = setInterval(() => {
-      //if (!this.isReady) return;
       var today = new Date();
       var minutes = today.getMinutes();
       var position = (minutes + 31)%62;

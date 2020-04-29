@@ -90,10 +90,10 @@ vorpal
   });
 
 vorpal
-  .command('time <action> [duration] [variation]')
+  .command('time <action>')
   .description('display the time')
   .action(function(args, callback) {
-    Actions.time(args.action, args.duration, args.variation);
+    Actions.time(args.action);
     callback();
   });
 

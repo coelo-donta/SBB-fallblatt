@@ -71,7 +71,7 @@ module.exports = class Server {
       });
 
       client.on('time', (data) => {
-        Actions.time(data.action, data.duration, data.variation);
+        Actions.time(data.action);
 
         client.emit('time', {success: true, status: Actions.status()});
       });

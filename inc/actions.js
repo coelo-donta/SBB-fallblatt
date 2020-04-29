@@ -177,12 +177,11 @@ module.exports = class Actions {
     vorpal.log(colors.magenta('turn mode set to "' + action + '"'));
   }
 
-  static time(action, duration = 5, variation = 0) {
+  static time(action) {
     if (!this.isReady) return;
-    var today = new Date();
-    var minutes = today.getMinutes();
-    this.moduleInstance.time(action, duration * 1000, variation * 1000);
 
-    vorpal.log(colors.magenta('time is "' + minutes + '"'));
+    this.moduleInstance.time(action);
+
+    vorpal.log(colors.magenta('start displaying time'));
   }
 }
