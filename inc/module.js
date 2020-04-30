@@ -135,7 +135,17 @@ module.exports = class Module extends ModuleController {
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
         clearTimeout(this.timeTimeout);
-        this.timePosition();
+        var today = new Date();
+        var minutes = today.getMinutes();
+        var seconds = today.getSeconds();
+        var position = this.minutesToPosition(minutes);
+        // set position
+        super.move(position);
+        // update on second 0
+        var diff = 60+1-seconds;
+        setTimeout(() => {
+          this.timePosition();
+        }, diff*1000);
         this.switchMode('time');
         break;
       case 'stop':
@@ -146,15 +156,24 @@ module.exports = class Module extends ModuleController {
   }
 
   timePosition() {
-    this.timeTimeout = setInterval(() => {
-      var today = new Date();
-      var minutes = today.getMinutes();
-      var position = (minutes + 31)%62;
-      if (minutes < 31) {
-          position = position - 1;
-      };
-      super.move(position);
+    // display current time
+    var today = new Date();
+    var minutes = today.getMinutes();
+    var position = this.minutesToPosition(minutes);
+    super.move(position);
+    // then update every 60 seconds
+    this.timeTimeout = setTimeout(() => {
       this.timePosition();
-    }, 5000);
+    }, 60000);
   }
+
+  minutesToPosition(minutes) {
+    // convert minute to module position
+    var position = (minutes + 31)%62;
+    if (minutes < 31) {
+        position = position - 1;
+    };
+    return position;
+  }
+
 };

@@ -182,6 +182,6 @@ module.exports = class Actions {
 
     this.moduleInstance.time(action);
 
-    vorpal.log(colors.magenta('start displaying time'));
+    vorpal.log(colors.magenta(action + ' displaying time'));
   }
 }
