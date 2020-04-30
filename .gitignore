@@ -60,3 +60,6 @@ config/serial.txt
 config/config.json
 .DS_Store
 package-lock.json
+
+# Other
+.vscode
