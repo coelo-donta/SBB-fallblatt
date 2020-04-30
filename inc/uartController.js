@@ -21,7 +21,8 @@ module.exports = class UARTController {
     let config = require('../config/config.json');
 
     this.connectionPromise = new Promise((resolve, reject) => {
-      this.port = new SerialPort(config.serial, {
+      // get serial of first module element (all modules have the same)
+      this.port = new SerialPort(config.modules[0].serial, {
         baudRate: 19200
       }, (err) => {
         if (err) {

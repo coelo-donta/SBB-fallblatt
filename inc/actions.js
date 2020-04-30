@@ -10,9 +10,12 @@ module.exports = class Actions {
     this.isReady = false;
 
     let config = require('../config/config.json');
-
+    //let isReadyPromise = [];
+    //for (var i = 0; i <= config.modules.length; i++) {
+    //let isReadyPromiseTemp = new Promise((resolve, reject) => {
+    //  this.moduleInstance = new Module(config.modules[i].module, config.modules[i].type);
     let isReadyPromise = new Promise((resolve, reject) => {
-      this.moduleInstance = new Module(config.module, config.type);
+      this.moduleInstance = new Module(config.modules[0].module, config.modules[0].type);
 
       Module.connectionPromise.then(() => {
         this.initMessage();
@@ -44,7 +47,8 @@ module.exports = class Actions {
         }, 1000);
       });
     });
-
+    //isReadyPromise.push(isReadyPromiseTemp);
+    //}
     return isReadyPromise;
   }
 
