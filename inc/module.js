@@ -11,11 +11,11 @@ module.exports = class Module extends ModuleController {
     this.randomDuration = 10000
     this.randomVariation = 0;
     this.switchMode('static');
-    this.loadMessagesMapping();
+    this.loadMessagesMapping(address);
   }
 
-  loadMessagesMapping() {
-    this.messages = require('../config/modules-mapping/' + this.address + '.json');
+  loadMessagesMapping(address) {
+    this.messages = require('../config/modules-mapping/' + address.toString().padStart(2, '0') + '.json');
 
     this.bladeCount = this.messages.length;
   }
@@ -30,7 +30,8 @@ module.exports = class Module extends ModuleController {
     return this.messages[this.position];
   }
 
-  list() {
+  list(address) {
+    this.loadMessagesMapping(address);
     return this.messages;
   }
 

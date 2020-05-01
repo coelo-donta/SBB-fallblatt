@@ -123,8 +123,8 @@ module.exports = class Actions {
     }
   }
 
-  static list(echo = true) {
-    let messages = this.moduleInstance.list();
+  static list(address, echo=true) {
+    let messages = this.moduleInstance.list(address);
 
     if (echo) {
       messages.forEach(function(message, index) {

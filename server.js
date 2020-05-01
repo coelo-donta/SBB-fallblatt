@@ -41,10 +41,10 @@ vorpal
   })
 
 vorpal
-  .command('list')
+  .command('list <address>')
   .description('get module messages')
   .action(function(args, callback) {
-    Actions.list();
+    Actions.list(args.address);
     callback();
   })
 
