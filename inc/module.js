@@ -52,9 +52,9 @@ module.exports = class Module extends ModuleController {
     return found;
   }
 
-  move(position, address) {
+  move(address, position) {
     this.random('stop');
-    super.move(position, address);
+    super.move(address, position);
   }
 
   random(action, duration = 10000, variation = 0) {
@@ -135,17 +135,16 @@ module.exports = class Module extends ModuleController {
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
         clearTimeout(this.timeTimeout);
-        var today = new Date();
-        var minutes = today.getMinutes();
-        var seconds = today.getSeconds();
-        var position = this.minutesToPosition(minutes);
-        // set position
-        super.move(position);
+
+        this.updateTime();
+
         // update on second 0
-        var diff = 60+1-seconds;
+        var seconds = new Date().getSeconds();
+        var diff = 60-seconds;
         setTimeout(() => {
-          this.timePosition();
+          this.displayTime();
         }, diff*1000);
+
         this.switchMode('time');
         break;
       case 'stop':
@@ -155,16 +154,23 @@ module.exports = class Module extends ModuleController {
     }
   }
 
-  timePosition() {
-    // display current time
-    var today = new Date();
-    var minutes = today.getMinutes();
-    var position = this.minutesToPosition(minutes);
-    super.move(position);
+  displayTime() {
+    this.updateTime();
     // then update every 60 seconds
     this.timeTimeout = setTimeout(() => {
-      this.timePosition();
+      this.displayTime();
     }, 60000);
+  }
+
+  updateTime() {
+    // display current time
+    var today = new Date();
+    var hour = today.getHours();
+    var minutes = today.getMinutes();
+    var min_position = this.minutesToPosition(minutes);
+    // set position
+    super.move(0x00, hour);
+    setTimeout(() => { super.move(0x01, min_position); }, 1);
   }
 
   minutesToPosition(minutes) {

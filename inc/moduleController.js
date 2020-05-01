@@ -28,7 +28,7 @@ module.exports = class ModuleController extends UARTController {
     global.server.io.emit('position', {position: this.position});
   }
 
-  move(index, address) {
+  move(address, index) {
     if (index > this.bladeCount) return;
 
     this.position = index;
