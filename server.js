@@ -65,10 +65,10 @@ vorpal
   })
 
 vorpal
-  .command('move <position>')
-  .description('move the module to <position>')
+  .command('move <position> <address>')
+  .description('move the module <address> to <position>')
   .action(function(args, callback) {
-    Actions.move(args.position)
+    Actions.move(args.position, args.address)
     callback();
   })
 

@@ -28,12 +28,12 @@ module.exports = class ModuleController extends UARTController {
     global.server.io.emit('position', {position: this.position});
   }
 
-  move(index) {
+  move(index, address) {
     if (index > this.bladeCount) return;
 
     this.position = index;
 
-    let data = new Buffer([0xFF, 0xC0, this.address, index]);
+    let data = new Buffer([0xFF, 0xC0, address, index]);
     UARTController.send(data);
 
     global.server.io.emit('position', {position: this.position});

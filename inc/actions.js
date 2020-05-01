@@ -149,12 +149,12 @@ module.exports = class Actions {
     return found;
   }
 
-  static move(position) {
+  static move(position, address) {
     if (!this.isReady) return;
 
-    this.moduleInstance.move(position);
+    this.moduleInstance.move(position, address);
 
-    vorpal.log(colors.magenta('module moved to "' + position + '"'));
+    vorpal.log(colors.magenta('module "' + address +'" moved to "' + position + '"'));
   }
 
   static step() {

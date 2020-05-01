@@ -52,9 +52,9 @@ module.exports = class Module extends ModuleController {
     return found;
   }
 
-  move(position) {
+  move(position, address) {
     this.random('stop');
-    super.move(position);
+    super.move(position, address);
   }
 
   random(action, duration = 10000, variation = 0) {
