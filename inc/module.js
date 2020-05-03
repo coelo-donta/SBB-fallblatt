@@ -35,20 +35,22 @@ module.exports = class Module extends ModuleController {
     return this.messages;
   }
 
-  find(target) {
+  find(address, target) {
     var found = false;
     var messageIndex = 0;
 
     this.random('stop');
 
+    this.loadMessagesMapping(address);
+
     this.messages.forEach(function(message, index) {
-      if (message.toLowerCase().search(target.toLowerCase()) > -1 && !found) {
+      if (message == target && !found) {
         messageIndex = index;
         found = true;
       }
     });
 
-    if (found) this.move(messageIndex);
+    if (found) this.move(address, messageIndex);
 
     return found;
   }

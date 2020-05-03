@@ -49,10 +49,10 @@ vorpal
   })
 
 vorpal
-  .command('find <string>')
-  .description('move the module to searched <string>')
+  .command('find <address> <string>')
+  .description('move the module <address> to searched <string>')
   .action(function(args, callback) {
-    Actions.find(args.string)
+    Actions.find(args.address, args.string)
     callback();
   })
 

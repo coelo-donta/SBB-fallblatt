@@ -135,15 +135,15 @@ module.exports = class Actions {
     }
   }
 
-  static find(string) {
+  static find(address, string) {
     if (!this.isReady) return;
 
-    let found = this.moduleInstance.find(string);
+    let found = this.moduleInstance.find(address, string);
 
     if (found) {
-      vorpal.log(colors.magenta('module moved to "' + string + '"'));
+      vorpal.log(colors.magenta('module "' + address + '" moved to "' + string + '"'));
     } else {
-      vorpal.log(colors.red('no message containing "' + string + '" found'));
+      vorpal.log(colors.red('no message containing "' + string + '" found in module "' + address +'"'));
     }
 
     return found;
