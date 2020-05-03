@@ -97,4 +97,12 @@ vorpal
     callback();
   });
 
+vorpal
+  .command('timetable')
+  .description('get and display timetable')
+  .action(function(args, callback) {
+    Actions.timetable();
+    callback();
+  });
+
 vorpal.delimiter('fallblatt >');

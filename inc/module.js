@@ -185,4 +185,22 @@ module.exports = class Module extends ModuleController {
     return position;
   }
 
+  timetable() {
+    var timetable = this.loadTimetable();
+
+    this.find(0, timetable.timetable[0].hour);
+    this.find(1, timetable.timetable[0].minute);
+    this.find(2, timetable.timetable[0].delay);
+    this.find(3, timetable.timetable[0].train);
+    this.find(4, timetable.timetable[0].via);
+    this.find(11, timetable.timetable[0].destination);
+
+  }
+
+  loadTimetable() {
+    var timetable = require('../config/timetable.json');
+
+    return timetable;
+  }
+
 };

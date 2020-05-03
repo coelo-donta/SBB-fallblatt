@@ -188,4 +188,13 @@ module.exports = class Actions {
 
     vorpal.log(colors.magenta(action + ' displaying time'));
   }
+
+  static timetable() {
+    if (!this.isReady) return;
+
+    this.moduleInstance.timetable();
+
+    vorpal.log(colors.magenta('displaying element 0 of timetable'));
+  }
+
 }
