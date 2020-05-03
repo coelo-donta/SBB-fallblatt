@@ -98,10 +98,10 @@ vorpal
   });
 
 vorpal
-  .command('timetable')
+  .command('timetable <action>')
   .description('get and display timetable')
   .action(function(args, callback) {
-    Actions.timetable();
+    Actions.timetable(args.action);
     callback();
   });
 

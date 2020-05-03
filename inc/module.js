@@ -132,12 +132,13 @@ module.exports = class Module extends ModuleController {
     }, this.turnDuration + Math.floor(Math.random() * this.turnVariation));
   }
 
-  time(action, duration = 10000, variation = 0) {
+  time(action) {
     switch (action) {
       case 'start':
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
         clearTimeout(this.timeTimeout);
+        clearTimeout(this.timetableTimeout);
 
         this.updateTime();
 
@@ -185,15 +186,28 @@ module.exports = class Module extends ModuleController {
     return position;
   }
 
-  timetable() {
-    var timetable = this.loadTimetable();
+  timetable(action) {
+    switch (action) {
+      case 'start':
+        clearTimeout(this.timeTimeout);
 
-    this.find(0, timetable.timetable[0].hour);
-    this.find(1, timetable.timetable[0].minute);
-    this.find(2, timetable.timetable[0].delay);
-    this.find(3, timetable.timetable[0].train);
-    this.find(4, timetable.timetable[0].via);
-    this.find(11, timetable.timetable[0].destination);
+         // display timetable
+        this.displayTimetable();
+        // clear first timeout to avoid multiple same timeouts
+        clearTimeout(this.timetableTimeout);
+        var seconds = new Date().getSeconds();
+        var diff = 60-seconds;
+        // update on second 0
+        setTimeout(() => {
+          this.displayTimetable();
+        }, diff*1000);
+        this.switchMode('timetable');
+        break;
+      case 'stop':
+        clearTimeout(this.timetableTimeout);
+        this.switchMode('static');
+        break;
+    }
 
   }
 
@@ -201,6 +215,54 @@ module.exports = class Module extends ModuleController {
     var timetable = require('../config/timetable.json');
 
     return timetable;
+  }
+
+  displayTimetable() {
+    // set timetable
+    var interval = this.updateTimetable();
+    // update timetable after every interval
+    this.timetableTimeout = setTimeout(() => {
+      interval = this.updateTimetable();
+    }, interval*60000);
+  }
+
+  updateTimetable() {
+    var today = new Date();
+    var hour = today.getHours();
+    var minutes = today.getMinutes();
+
+    var timetable = this.loadTimetable();
+
+    // get all hours an minutes of the schedule
+    var schedule_minutes  = [];
+    var minutes_sorted  = [];
+    var schedule_hours = [];
+    timetable.timetable.forEach(element => schedule_minutes.push(element.minute));
+    timetable.timetable.forEach(element => minutes_sorted.push(element.minute));
+    timetable.timetable.forEach(element => schedule_hours.push(element.hour));
+
+    // get next departure minute
+    minutes_sorted.sort(function(a, b) { return a - b; });
+    var next_schedule = minutes_sorted.find(element => element > minutes);
+
+    // if nothing found restart looking from 0
+    if (typeof next_schedule == "undefined") {
+      next_schedule = minutes_sorted.find(element => element > -1);
+    }
+
+    // get index of entry of next departure
+    var next_index = schedule_minutes.indexOf(String(next_schedule));
+
+    // display timetable
+    this.find(0, timetable.timetable[next_index].hour);
+    this.find(1, timetable.timetable[next_index].minute);
+    this.find(2, timetable.timetable[next_index].delay);
+    this.find(3, timetable.timetable[next_index].train);
+    this.find(4, timetable.timetable[next_index].via);
+    this.find(11, timetable.timetable[next_index].destination);
+
+    // return time until next change in schedule + 1 minute
+    return (60 + next_schedule - minutes) % 60 + 1;
   }
 
 };
