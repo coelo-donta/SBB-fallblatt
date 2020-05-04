@@ -220,9 +220,10 @@ module.exports = class Module extends ModuleController {
   displayTimetable() {
     // set timetable
     var interval = this.updateTimetable();
+
     // update timetable after every interval
     this.timetableTimeout = setTimeout(() => {
-      interval = this.updateTimetable();
+      interval = this.displayTimetable();
     }, interval*60000);
   }
 
