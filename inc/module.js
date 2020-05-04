@@ -2,6 +2,7 @@ const colors = require('colors');
 const vorpal = require('vorpal')();
 const fs = require('fs');
 const ModuleController = require('./moduleController');
+const path=require("path");
 
 module.exports = class Module extends ModuleController {
   constructor(address, type) {
@@ -138,7 +139,6 @@ module.exports = class Module extends ModuleController {
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
         clearTimeout(this.timeTimeout);
-        clearTimeout(this.timetableTimeout);
 
         this.updateTime();
 
@@ -190,14 +190,13 @@ module.exports = class Module extends ModuleController {
     switch (action) {
       case 'start':
         clearTimeout(this.timeTimeout);
+        clearTimeout(this.timetableTimeout);
 
          // display timetable
         this.displayTimetable();
-        // clear first timeout to avoid multiple same timeouts
-        clearTimeout(this.timetableTimeout);
+        // update on second 0
         var seconds = new Date().getSeconds();
         var diff = 60-seconds;
-        // update on second 0
         setTimeout(() => {
           this.displayTimetable();
         }, diff*1000);
@@ -213,6 +212,8 @@ module.exports = class Module extends ModuleController {
 
   loadTimetable() {
     var timetable = require('../config/timetable.json');
+    // delete module cache to reload updated file every time
+    delete require.cache[require.resolve('../config/timetable.json')];
 
     return timetable;
   }
