@@ -5,7 +5,15 @@ $(function () {
   });
 
   socket.on('position', function(data) {
-    $('#module').val(data.position);
+    if (typeof data.address == 'undefined') {
+      for (var address of [0,1,2,3,4,11]) {
+        var id = '#module' + address;
+        $(id).val(data.position);
+      }
+    } else {
+      var id = '#module' + address;
+      $(id).val(data.position);
+    }
   });
 
   socket.on('mode', function(data) {
@@ -77,8 +85,10 @@ $(function () {
         targetFields = $('#randomVariationLine, #randomDurationLine');
         socket.emit('random', {action: action, duration: $('#randomDuration').val(), variation: $('#randomVariation').val()});
       } else if (mode == 'time') {
+        targetFields = $('');
         socket.emit('time', {action: action});
       } else if (mode == 'timetable') {
+        targetFields = $('');
         socket.emit('timetable', {action: action});
       } else {
         socket.emit('turn', {action: 'stop'});
@@ -92,8 +102,9 @@ $(function () {
       }
     });
 
-    $('body').on('change', '#module', function () {
-      socket.emit('move', {destination: $(this).val()});
+    $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module11', function () {
+      address = this.id;
+      socket.emit('move', {address: address.slice(6), destination: $(this).val()});
     });
   } else {
     socket.emit('status');

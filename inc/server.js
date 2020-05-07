@@ -33,7 +33,9 @@ module.exports = class Server {
       });
 
       client.on('position', (data) => {
-        client.emit('position', Actions.position());
+        for (var address of [0,1,2,3,4,11]) {
+          client.emit('position', {address: address, data: Actions.position()});
+        }
       });
 
       client.on('reset', (data) => {
@@ -43,7 +45,7 @@ module.exports = class Server {
       });
 
       client.on('move', (data) => {
-        Actions.move(data.destination);
+        Actions.move(data.address, data.destination);
 
         client.emit('move', {success: true, status: Actions.status()});
       });
