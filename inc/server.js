@@ -77,6 +77,12 @@ module.exports = class Server {
 
         client.emit('time', {success: true, status: Actions.status()});
       });
+
+      client.on('timetable', (data) => {
+        Actions.timetable(data.action);
+
+        client.emit('timetable', {success: true, status: Actions.status()});
+      });
     });
 
     this.app.set('views', __dirname + '/../views');
@@ -180,6 +186,15 @@ module.exports = class Server {
       let request = req.url.split('/');
 
       Actions.time(request[2]);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({success: true, status: Actions.status()}));
+    });
+
+    this.app.post('/timetable/*', function (req, res) {
+      let request = req.url.split('/');
+
+      Actions.timetable(request[2]);
 
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({success: true, status: Actions.status()}));

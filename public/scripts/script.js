@@ -78,10 +78,13 @@ $(function () {
         socket.emit('random', {action: action, duration: $('#randomDuration').val(), variation: $('#randomVariation').val()});
       } else if (mode == 'time') {
         socket.emit('time', {action: action});
+      } else if (mode == 'timetable') {
+        socket.emit('timetable', {action: action});
       } else {
         socket.emit('turn', {action: 'stop'});
         socket.emit('random', {action: 'stop'});
         socket.emit('time', {action: 'stop'});
+        socket.emit('timetable', {action: 'stop'});
       }
 
       if (action == 'start') {
