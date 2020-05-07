@@ -11,7 +11,7 @@ $(function () {
         $(id).val(data.position);
       }
     } else {
-      var id = '#module' + address;
+      var id = '#module' + data.address;
       $(id).val(data.position);
     }
   });

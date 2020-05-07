@@ -123,9 +123,6 @@ module.exports = class Server {
     });
 
     this.app.get('/list', function (req, res) {
-      let request = req.url.split('/');
-      Actions.list(request[2]);
-
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(Actions.list(false)));
     });
