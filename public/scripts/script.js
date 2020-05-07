@@ -50,9 +50,8 @@ $(function () {
   });
 
   socket.on('list', function(data) {
-    var input = $('<select id="module"></select>');
-
-    $.each(data, function (index, message) {
+    var input = $('<select class="module" id="module' + data.address + '"></select>');
+    $.each(data.data, function (index, message) {
       var select = $('<option value="' + index + '">' + ((message.length == 0) ? '–' : message) + '</option>');
       input.append(select);
     });

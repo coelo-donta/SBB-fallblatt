@@ -27,7 +27,9 @@ module.exports = class Server {
       });
 
       client.on('list', (data) => {
-        client.emit('list', Actions.list(false));
+        for (var address of [0,1,2,3,4,11]) {
+          client.emit('list', {address: address, data: Actions.list(address, false)});
+        }
       });
 
       client.on('position', (data) => {
@@ -113,6 +115,9 @@ module.exports = class Server {
     });
 
     this.app.get('/list', function (req, res) {
+      let request = req.url.split('/');
+      Actions.list(request[2]);
+
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(Actions.list(false)));
     });
