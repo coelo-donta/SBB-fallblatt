@@ -26,8 +26,8 @@ module.exports = class ModuleController extends UARTController {
 
     let data = new Buffer([0xFF, 0xC6, this.address]);
     UARTController.send(data);
-
-    global.server.io.emit('position', {position: this.position});
+    // address 100 = send to all
+    global.server.io.emit('position', {address: 100});
   }
 
   move(address, index) {

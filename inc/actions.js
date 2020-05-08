@@ -100,7 +100,7 @@ module.exports = class Actions {
     if (!this.isReady) return;
 
     this.moduleInstance.reset();
-    vorpal.log(colors.magenta('module set to position 0'));
+    vorpal.log(colors.magenta('reset modules to position 0'));
   }
 
   static position() {

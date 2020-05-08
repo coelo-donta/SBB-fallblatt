@@ -6,11 +6,24 @@ $(function () {
 
   socket.on('position', function(data) {
     if (typeof data.address == 'undefined') {
+      // if no module is specified, e.g reset
       for (var address of [0,1,2,3,4,11]) {
         var id = '#module' + address;
         $(id).val(data.position);
       }
+    } else if (data.address == 100) {
+      // if all modules are targetted, e.g. step
+      for (var address of [0,1,2,3,4,11]) {
+        // create module id
+        var id = '#module' + address;
+        // get current position
+        var current = parseInt($(id).val());
+        // set number of blades
+        var blades = (address == 0 | address == 2) ? 40 : 62;
+        $(id).val((current+1)%blades);
+      }
     } else {
+      // if one module is targeted, eg. static
       var id = '#module' + data.address;
       $(id).val(data.position);
     }
