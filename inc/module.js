@@ -82,9 +82,10 @@ module.exports = class Module extends ModuleController {
 
   selectRandomPosition() {
     this.randomTimeout = setTimeout(() => {
-      let index = this.findRandomMessage();
-      super.move(index);
-
+      for (var address of [0,1,2,3,4,11]) {
+        let index = this.findRandomMessage();
+        super.move(address, index);
+      }
       this.selectRandomPosition();
     }, this.randomDuration + Math.floor(Math.random() * this.randomVariation));
   }
