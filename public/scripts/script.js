@@ -40,6 +40,7 @@ $(function () {
         let train_style3 = ["RE RegioExpress","R Regio","S S-Bahn rot","S S-Bahn schwarz","S12 S-Bahn","S29 S-Bahn","S12 KURZZUG SEKTOR B","S12 SEKTOR A B","S12 SEKTOR B C","S11 S-Bahn","S11 KURZZUG SEKTOR B","S11 SEKTOR A B","S11 SEKTOR B C"];
         let train_style4 = ["SN MIT ZUSCHLAG", "SN"];
         if (train_style1.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.color = "#fff";
           document.getElementById(id.slice(1)).style.background = "#eb0000";
         } else if (train_style2.includes(train[0][$(id).val()].textContent)) {
           document.getElementById(id.slice(1)).style.color = "#fce319";
@@ -56,7 +57,7 @@ $(function () {
         }
       }
       if (id == "#module4") {
-        let via_style1 = ["Bitte nicht","UNBESTIMMTE VERSPÄTUNG","LAUTSPRECHER-DURCHSAGEN BEACHTEN","RESERVATION OBLIGATORISCH","MIT HALT AUF ALLEN STATIONEN","ABFAHRT AUF DEM BAHNHOFPLATZ","Ohne Halt bis"];
+        let via_style1 = ["Bitte nicht","UNBESTIMMTE VERSPÄTUNG","LAUTSPRECHER-DURCHSAGEN BEACHTEN","RESERVATION OBLIGATORISCH","MIT HALT AUF ALLEN STATIONEN","ABFAHRT AUF DEM BAHNHOFPLATZ","Ohne Halt bis","VERKEHRT NICHT VIA ZÜRICH HB"];
         if (via_style1.includes(train[0][$(id).val()].textContent)) {
           document.getElementById(id.slice(1)).style.color = "#fce319";
         } else {
@@ -127,6 +128,7 @@ $(function () {
 
   if ($('body').hasClass('index')) {
     socket.emit('status');
+    $('#modules').append('<div class="track-number"><span class="track-title">Gleis</span>1</div>');
     socket.emit('list');
 
     $('body').on('change', '#mode, #turnDuration, #turnVariation, #randomDuration, #randomVariation', function () {
