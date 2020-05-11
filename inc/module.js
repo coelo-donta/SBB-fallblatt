@@ -175,7 +175,7 @@ module.exports = class Module extends ModuleController {
     var min_position = this.minutesToPosition(minutes);
     // set position
     super.move(0x00, hour);
-    setTimeout(() => { super.move(0x01, min_position); }, 1);
+    super.move(0x01, min_position);
   }
 
   minutesToPosition(minutes) {
