@@ -10,6 +10,7 @@ $(function () {
       for (let address of [0,1,2,3,4,11]) {
         let id = '#module' + address;
         $(id).val(data.position);
+        cellStyle(id);
       }
     } else if (data.address == 100) {
       // if all modules are targetted, e.g. step
@@ -21,12 +22,57 @@ $(function () {
         // set number of blades
         let blades = (address == 0 | address == 2) ? 40 : 62;
         $(id).val((current+1)%blades);
+        cellStyle(id);
       }
     } else {
       // if one module is targeted, eg. static
-      let id = '#module' + data.address;
+      var id = '#module' + data.address;
       $(id).val(data.position);
+      cellStyle(id);
     }
+
+    function cellStyle(id) {
+      // styling of cells
+      let train = $(id);
+      if (id == "#module3") {
+        let train_style1 = ["EC","EN","IC","ICE","IR","CIS","ICN","Messe-Extrazug","Dampfextrazug","Militär-Extrazug ","Extrazug","Ersatzzug","Entlastungszug","Eilzug"];
+        let train_style2 = ["Ausfall","Zug fällt aus","Autobus ab","Bahnersatz - Bus","Streckenunterbruch","Bitte nicht einsteigen","Gleis ausser Betrieb","Betriebsstörung","Gleisänderung"];
+        let train_style3 = ["RE RegioExpress","R Regio","S S-Bahn rot","S S-Bahn schwarz","S12 S-Bahn","S29 S-Bahn","S12 KURZZUG SEKTOR B","S12 SEKTOR A B","S12 SEKTOR B C","S11 S-Bahn","S11 KURZZUG SEKTOR B","S11 SEKTOR A B","S11 SEKTOR B C"];
+        let train_style4 = ["SN MIT ZUSCHLAG", "SN"];
+        if (train_style1.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.background = "#eb0000";
+        } else if (train_style2.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.color = "#fce319";
+          document.getElementById(id.slice(1)).style.background = "#2d327d";
+        } else if (train_style3.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.color = "#2d327d";
+          document.getElementById(id.slice(1)).style.background = "#fff";
+        } else if (train_style4.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.color = "#fce319";
+          document.getElementById(id.slice(1)).style.background = "#000";
+        } else {
+          document.getElementById(id.slice(1)).style.color = "#fff";
+          document.getElementById(id.slice(1)).style.background = "#2d327d";
+        }
+      }
+      if (id == "#module4") {
+        let via_style1 = ["Bitte nicht","UNBESTIMMTE VERSPÄTUNG","LAUTSPRECHER-DURCHSAGEN BEACHTEN","RESERVATION OBLIGATORISCH","MIT HALT AUF ALLEN STATIONEN","ABFAHRT AUF DEM BAHNHOFPLATZ","Ohne Halt bis"];
+        if (via_style1.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.color = "#fce319";
+        } else {
+          document.getElementById(id.slice(1)).style.color = "#fff";
+        }
+      }
+      if (id == "#module11") {
+        let destination_style1 = ["einsteigen"];
+        if (destination_style1.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.color = "#fce319";
+        } else {
+          document.getElementById(id.slice(1)).style.color = "#fff";
+        }
+      }
+    }
+
   });
 
   socket.on('mode', function(data) {
