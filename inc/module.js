@@ -273,7 +273,7 @@ module.exports = class Module extends ModuleController {
     let next_index = next_index_minute;
 
     // display timetable
-    this.find(0, timetable.timetable[next_index].minute);
+    this.find(0, timetable.timetable[next_index].hour);
     this.find(1, timetable.timetable[next_index].minute);
     this.find(2, timetable.timetable[next_index].delay);
     this.find(3, timetable.timetable[next_index].train);
