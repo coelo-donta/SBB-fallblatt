@@ -230,42 +230,70 @@ module.exports = class Module extends ModuleController {
   }
 
   updateTimetable() {
-    var today = new Date();
-    var hour = today.getHours();
-    var minutes = today.getMinutes();
+    let today = new Date();
+    let hour = today.getHours();
+    let minute = today.getMinutes();
 
-    var timetable = this.loadTimetable();
+    // load and sort timetable by hour and minute
+    let timetable = this.loadTimetable();
+    timetable.timetable.sort(function (a, b) {
+      let aSize = parseInt(a.hour);
+      let bSize = parseInt(b.hour);
+      let aLow = parseInt(a.minute);
+      let bLow = parseInt(b.minute);
+
+      if(aSize == bSize) { return (aLow < bLow) ? -1 : (aLow > bLow) ? 1 : 0;
+      } else { return (aSize < bSize) ? -1 : 1; }
+    });
 
     // get all hours an minutes of the schedule
-    var schedule_minutes  = [];
-    var minutes_sorted  = [];
-    var schedule_hours = [];
-    timetable.timetable.forEach(element => schedule_minutes.push(element.minute));
-    timetable.timetable.forEach(element => minutes_sorted.push(element.minute));
-    timetable.timetable.forEach(element => schedule_hours.push(element.hour));
+    let schedule_minutes  = [];
+    let schedule_hours = [];
+    timetable.timetable.forEach(element => {
+      schedule_minutes.push(element.minute);
+      schedule_hours.push(element.hour);
+    });
 
-    // get next departure minute
-    minutes_sorted.sort(function(a, b) { return a - b; });
-    var next_schedule = minutes_sorted.find(element => element > minutes);
-
-    // if nothing found restart looking from 0
-    if (typeof next_schedule == "undefined") {
-      next_schedule = minutes_sorted.find(element => element > -1);
+    // get index of next hour and minute
+    let next_index_hour = schedule_hours.findIndex(element => element >= hour);
+    let next_index_minute = schedule_minutes.slice(next_index_hour).findIndex(element => element > minute);
+    // if no minute found (-1) restart looking from 0 starting at next hour
+    if (next_index_minute < 0) {
+      next_index_hour = schedule_hours.findIndex(element => element >= hour + 1);
+      next_index_minute = schedule_minutes.slice(next_index_hour).findIndex(element => element > -1);
     }
+    // if no hour found (-1) restart looking from hour 0
+    if (next_index_hour < 0) {
+      next_index_hour = schedule_hours.findIndex(element => element >= -1);
+      next_index_minute = schedule_minutes.slice(next_index_hour).findIndex(element => element > -1);;
+    }
+    // add hour index because we sliced
+    next_index_minute = next_index_minute + next_index_hour;
 
-    // get index of entry of next departure
-    var next_index = schedule_minutes.indexOf(String(next_schedule));
+    let next_index = next_index_minute;
 
     // display timetable
-    this.find(0, timetable.timetable[next_index].hour);
+    this.find(0, timetable.timetable[next_index].minute);
     this.find(1, timetable.timetable[next_index].minute);
     this.find(2, timetable.timetable[next_index].delay);
     this.find(3, timetable.timetable[next_index].train);
     this.find(4, timetable.timetable[next_index].via);
     this.find(11, timetable.timetable[next_index].destination);
 
+    let next_schedule_minutes = timetable.timetable[next_index].minute;
+    let next_schedule_hours = timetable.timetable[next_index].hour;
+
+    // get time difference to next update
+    let now = new Date(2000, 0, 1,  hour, minute);
+    let next_schedule = new Date(2000, 0, 1, next_schedule_hours, next_schedule_minutes);
+    // add one day if overnight
+    if (next_schedule < now) {
+      next_schedule.setDate(next_schedule.getDate() + 1);
+    }
+    let diff = next_schedule - now;
+
     // return time until next change in schedule + 1 minute
-    return (60 + next_schedule - minutes) % 60 + 1;
+    return Math.floor(diff / 1000 / 60) + 1;
   }
 
 };
