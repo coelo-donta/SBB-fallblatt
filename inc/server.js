@@ -27,13 +27,13 @@ module.exports = class Server {
       });
 
       client.on('list', (data) => {
-        for (var address of [0,1,2,3,4,11]) {
+        for (var address of [0,1,2,3,4,5]) {
           client.emit('list', {address: address, data: Actions.list(address, false)});
         }
       });
 
       client.on('position', (data) => {
-        for (var address of [0,1,2,3,4,11]) {
+        for (var address of [0,1,2,3,4,5]) {
           client.emit('position', {address: address, data: Actions.position()});
         }
       });

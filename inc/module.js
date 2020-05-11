@@ -82,7 +82,7 @@ module.exports = class Module extends ModuleController {
 
   selectRandomPosition() {
     this.randomTimeout = setTimeout(() => {
-      for (var address of [0,1,2,3,4,11]) {
+      for (var address of [0,1,2,3,4,5]) {
         let index = this.findRandomMessage();
         super.move(address, index);
       }
@@ -278,7 +278,7 @@ module.exports = class Module extends ModuleController {
     this.find(2, timetable.timetable[next_index].delay);
     this.find(3, timetable.timetable[next_index].train);
     this.find(4, timetable.timetable[next_index].via);
-    this.find(11, timetable.timetable[next_index].destination);
+    this.find(5, timetable.timetable[next_index].destination);
 
     let next_schedule_minutes = timetable.timetable[next_index].minute;
     let next_schedule_hours = timetable.timetable[next_index].hour;

@@ -7,14 +7,14 @@ $(function () {
   socket.on('position', function(data) {
     if (typeof data.address == 'undefined') {
       // if no module is specified, e.g reset
-      for (let address of [0,1,2,3,4,11]) {
+      for (let address of [0,1,2,3,4,5]) {
         let id = '#module' + address;
         $(id).val(data.position);
         cellStyle(id);
       }
     } else if (data.address == 100) {
       // if all modules are targetted, e.g. step
-      for (let address of [0,1,2,3,4,11]) {
+      for (let address of [0,1,2,3,4,5]) {
         // create module id
         let id = '#module' + address;
         // get current position
@@ -63,7 +63,7 @@ $(function () {
           document.getElementById(id.slice(1)).style.color = "#fff";
         }
       }
-      if (id == "#module11") {
+      if (id == "#module5") {
         let destination_style1 = ["einsteigen"];
         if (destination_style1.includes(train[0][$(id).val()].textContent)) {
           document.getElementById(id.slice(1)).style.color = "#fce319";
@@ -160,7 +160,7 @@ $(function () {
       }
     });
 
-    $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module11', function () {
+    $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module5', function () {
       address = this.id;
       socket.emit('move', {address: address.slice(6), destination: $(this).val()});
     });
