@@ -2,7 +2,7 @@ html, body
   height 100%
 
 header
-  background-color #003399
+  background-color #2d327d
   color white
 
 h1
@@ -22,7 +22,7 @@ h1
       opacity .5
 
 .nav-tabs > li.active > a
-  color #da291c
+  color #eb0000
 
 section
   min-height calc(100% - 155px)
@@ -33,7 +33,7 @@ footer
   left 0
   width 100%
   padding 5px 0px
-  background-color #003399
+  background-color #2d327d
   color white
   text-align center
   font-size 10px;
@@ -59,6 +59,7 @@ select, input
 
 #modules
   background #2d327d
+  height 5em
   padding-left 7em
 
 .module
@@ -76,6 +77,20 @@ select, input
 
 #module3, #module4, #module5
   width 48%
+
+@media screen and (max-width: 600px)
+  #modules
+    height 9em
+    padding-top: 0.3em
+
+  #module0, #module1
+    width 15%
+
+  #module2
+    width 63%
+
+  #module3, #module4, #module5
+    width 95%
 
 .track-number
   position absolute
