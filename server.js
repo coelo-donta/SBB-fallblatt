@@ -105,4 +105,12 @@ vorpal
     callback();
   });
 
+vorpal
+  .command('schedule <from> <to>')
+  .description('get live schedule')
+  .action(function(args, callback) {
+    Actions.schedule(args.from, args.to);
+    callback();
+  });
+
 vorpal.delimiter('fallblatt >');

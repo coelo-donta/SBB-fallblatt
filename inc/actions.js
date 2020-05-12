@@ -197,4 +197,12 @@ module.exports = class Actions {
     vorpal.log(colors.magenta(action + ' displaying timetable'));
   }
 
+  static schedule(from, to) {
+    if (!this.isReady) return;
+
+    this.moduleInstance.schedule(from, to);
+
+    vorpal.log(colors.magenta('displaying live schedule'));
+  }
+
 }

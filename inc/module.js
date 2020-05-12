@@ -3,6 +3,7 @@ const vorpal = require('vorpal')();
 const fs = require('fs');
 const ModuleController = require('./moduleController');
 const path=require("path");
+const https = require('https');
 
 module.exports = class Module extends ModuleController {
   constructor(address, type) {
@@ -294,6 +295,72 @@ module.exports = class Module extends ModuleController {
 
     // return time until next change in schedule + 1 minute
     return Math.floor(diff / 1000 / 60) + 1;
+  }
+
+  schedule(from, to) {
+
+    let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' + to + '&datetime=';
+    console.log(url);
+
+    // get schedule
+    https.get(url, res => {
+      res.setEncoding("utf8");
+      let response = "";
+      res.on("data", data => {
+        response += data;
+      });
+      res.on("end", () => {
+        response = JSON.parse(response);
+
+        // handle response
+        // only interested in the first result
+        if (response.connections.length == 0) {
+          this.reset();
+          return;
+        }
+        let connections = response.connections[0];
+        let schedule = {};
+
+        let departure = new Date(connections.from.departure);
+        schedule.hour = departure.getHours();
+        schedule.minute = departure.getMinutes();
+        schedule.delay = connections.from.delay;
+        schedule.train = connections.products[0].replace(/\s[0-9]*/g, '');;
+        schedule.vias = [];
+        connections.sections[0].journey.passList.forEach(e => schedule.vias.push(e.station.name));
+        schedule.destination = connections.to.station.name;
+        
+        console.log(schedule);
+        // display time
+        this.find(0, schedule.hour);
+        this.find(1, schedule.minute);
+        // display delay
+        if (typeof(schedule.delay) == 'number') {
+          schedule.delay = 'ca ' + schedule.delay + (schedule.delay > 1) ? 'Minuten' : 'Minute' + 'später';
+          this.find(2, schedule.delay);
+
+        } else if (typeof(schedule.delay) == 'string') {
+          // todo
+          this.find(2, schedule.delay);
+
+        } else if (schedule.delay == null) {
+          this.move(2, 0);
+        }
+        // display train type
+        if (schedule.train[0] == 'S') {
+          schedule.train += ' S-Bahn';
+        }
+        this.find(3, schedule.train);
+        // display via
+        this.loadMessagesMapping(4);
+        schedule.via = this.messages.filter(e => schedule.vias.includes(e));
+        this.find(4, schedule.via[0]);
+        // display destination
+        this.find(5, schedule.destination);
+
+      });
+    });
+    return ;
   }
 
 };
