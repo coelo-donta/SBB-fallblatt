@@ -337,20 +337,22 @@ module.exports = class Module extends ModuleController {
         found.push(this.find(1, schedule.minute));
         // display delay
         if (typeof(schedule.delay) == 'number') {
-          schedule.delay = 'ca ' + schedule.delay + (schedule.delay > 1) ? 'Minuten' : 'Minute' + 'später';
+          schedule.delay = 'ca ' + schedule.delay + [(schedule.delay > 1) ? ' Minuten' : ' Minute'] + ' später';
           found.push(this.find(2, schedule.delay));
-
         } else if (typeof(schedule.delay) == 'string') {
           // todo
           found.push(this.find(2, schedule.delay));
-
         } else {
           this.move(2, 0);
           found.push(true);
         }
         // display train type
         if (schedule.train[0] == 'S') {
-          found.push(schedule.train += ' S-Bahn');
+          schedule.train += ' S-Bahn';
+        } else if (schedule.train.slice(0,2) == 'RE') {
+          schedule.train += ' RegioExpress';
+        } else if (schedule.train.slice(0,1) == 'R') {
+          schedule.train += ' Regio';
         }
         found.push(this.find(3, schedule.train));
         // display via
