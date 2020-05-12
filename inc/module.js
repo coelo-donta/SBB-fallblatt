@@ -331,32 +331,40 @@ module.exports = class Module extends ModuleController {
         schedule.destination = connections.to.station.name;
         
         console.log(schedule);
+        let found = [];
         // display time
-        this.find(0, schedule.hour);
-        this.find(1, schedule.minute);
+        found.push(this.find(0, schedule.hour));
+        found.push(this.find(1, schedule.minute));
         // display delay
         if (typeof(schedule.delay) == 'number') {
           schedule.delay = 'ca ' + schedule.delay + (schedule.delay > 1) ? 'Minuten' : 'Minute' + 'später';
-          this.find(2, schedule.delay);
+          found.push(this.find(2, schedule.delay));
 
         } else if (typeof(schedule.delay) == 'string') {
           // todo
-          this.find(2, schedule.delay);
+          found.push(this.find(2, schedule.delay));
 
-        } else if (schedule.delay == null) {
+        } else {
           this.move(2, 0);
+          found.push(true);
         }
         // display train type
         if (schedule.train[0] == 'S') {
-          schedule.train += ' S-Bahn';
+          found.push(schedule.train += ' S-Bahn');
         }
-        this.find(3, schedule.train);
+        found.push(this.find(3, schedule.train));
         // display via
         this.loadMessagesMapping(4);
         schedule.via = this.messages.filter(e => schedule.vias.includes(e));
-        this.find(4, schedule.via[0]);
+        found.push(this.find(4, schedule.via[0]));
         // display destination
-        this.find(5, schedule.destination);
+        found.push(this.find(5, schedule.destination));
+        // set all modules to 0 where nothing found
+        for (let i = 0; i <= found.length; i++) {
+          if (found[i] == false) {
+            this.move(i, 0)
+          };
+        };
 
       });
     });
