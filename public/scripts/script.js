@@ -150,6 +150,9 @@ $(function () {
       } else if (mode == 'timetable') {
         targetFields = $('');
         socket.emit('timetable', {action: action});
+      } else if (mode == 'reset') {
+        targetFields = $('');
+        socket.emit('reset', {});
       } else {
         socket.emit('turn', {action: 'stop'});
         socket.emit('random', {action: 'stop'});
