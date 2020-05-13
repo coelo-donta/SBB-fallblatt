@@ -300,7 +300,6 @@ module.exports = class Module extends ModuleController {
   schedule(from, to) {
 
     let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' + to + '&datetime=';
-    console.log(url);
 
     // get schedule
     https.get(url, res => {
@@ -349,15 +348,11 @@ module.exports = class Module extends ModuleController {
         // display train type
         if (schedule.train[0] == 'S') {
           let sbahns = ['S11', 'S12', 'S29'];
-          console.log(schedule.train);
           if (sbahns.findIndex(e => e == schedule.train) >= 0) {
-            console.log(schedule.train);
             schedule.train += ' S-Bahn';
           } else {
-            console.log(schedule.train);
             schedule.train = 'S S-Bahn schwarz';
           }
-          console.log(schedule.train);
         } else if (schedule.train.slice(0,2) == 'RE') {
           schedule.train += ' RegioExpress';
         } else if (schedule.train.slice(0,1) == 'R') {

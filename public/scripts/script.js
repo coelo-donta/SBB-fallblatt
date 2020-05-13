@@ -37,8 +37,9 @@ $(function () {
       if (id == "#module3") {
         let train_style1 = ["EC","EN","IC","ICE","IR","CIS","ICN","Messe-Extrazug","Dampfextrazug","Militär-Extrazug ","Extrazug","Ersatzzug","Entlastungszug","Eilzug"];
         let train_style2 = ["Ausfall","Zug fällt aus","Autobus ab","Bahnersatz - Bus","Streckenunterbruch","Bitte nicht einsteigen","Gleis ausser Betrieb","Betriebsstörung","Gleisänderung"];
-        let train_style3 = ["RE RegioExpress","R Regio","S S-Bahn rot","S S-Bahn schwarz","S12 S-Bahn","S29 S-Bahn","S12 KURZZUG SEKTOR B","S12 SEKTOR A B","S12 SEKTOR B C","S11 S-Bahn","S11 KURZZUG SEKTOR B","S11 SEKTOR A B","S11 SEKTOR B C"];
+        let train_style3 = ["R Regio", "S S-Bahn schwarz","S12 S-Bahn","S29 S-Bahn","S12 KURZZUG SEKTOR B","S12 SEKTOR A B","S12 SEKTOR B C","S11 S-Bahn","S11 KURZZUG SEKTOR B","S11 SEKTOR A B","S11 SEKTOR B C"];
         let train_style4 = ["SN MIT ZUSCHLAG", "SN"];
+        let train_style5 = ["RE RegioExpress", "S S-Bahn rot"];
         if (train_style1.includes(train[0][$(id).val()].textContent)) {
           document.getElementById(id.slice(1)).style.color = "#fff";
           document.getElementById(id.slice(1)).style.background = "#eb0000";
@@ -51,6 +52,9 @@ $(function () {
         } else if (train_style4.includes(train[0][$(id).val()].textContent)) {
           document.getElementById(id.slice(1)).style.color = "#fce319";
           document.getElementById(id.slice(1)).style.background = "#000";
+        } else if (train_style5.includes(train[0][$(id).val()].textContent)) {
+          document.getElementById(id.slice(1)).style.color = "#eb0000";
+          document.getElementById(id.slice(1)).style.background = "#fff";
         } else {
           document.getElementById(id.slice(1)).style.color = "#fff";
           document.getElementById(id.slice(1)).style.background = "#2d327d";
