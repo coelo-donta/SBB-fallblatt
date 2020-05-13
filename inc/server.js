@@ -85,6 +85,12 @@ module.exports = class Server {
 
         client.emit('timetable', {success: true, status: Actions.status()});
       });
+
+      client.on('schedule', (data) => {
+        Actions.schedule(data.from, data.to);
+
+        client.emit('schedule', {success: true, status: Actions.status()});
+      });
     });
 
     this.app.set('views', __dirname + '/../views');
@@ -194,6 +200,15 @@ module.exports = class Server {
       let request = req.url.split('/');
 
       Actions.timetable(request[2]);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({success: true, status: Actions.status()}));
+    });
+
+    this.app.post('/schedule/*', function (req, res) {
+      let request = req.url.split('/');
+
+      Actions.schedule(request[2], request[3]);
 
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({success: true, status: Actions.status()}));

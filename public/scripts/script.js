@@ -85,7 +85,7 @@ $(function () {
       $('#mode').val(data.mode);
       $('#module').val(data.position);
 
-      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine').hide()
+      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine, #scheduleForm').hide()
 
       if (data.mode == 'turn') {
         $('#turnDurationLine, #turnVariationLine').show();
@@ -97,6 +97,10 @@ $(function () {
         $('#randomDurationLine, #randomVariationLine').show();
         $('#randomDuration').val(data.randomDuration);
         $('#randomVariation').val(data.randomVariation);
+      }
+
+      if (data.mode == 'schedule') {
+        $('#scheduleForm').show();
       }
 
     } else if ($('body').hasClass('information')) {
@@ -136,7 +140,7 @@ $(function () {
       var action = (mode == 'static') ? 'stop' : 'start';
       var targetFields;
 
-      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine').hide()
+      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine, #scheduleForm').hide()
 
       if (mode == 'turn') {
         targetFields = $('#turnVariationLine, #turnDurationLine');
@@ -150,6 +154,8 @@ $(function () {
       } else if (mode == 'timetable') {
         targetFields = $('');
         socket.emit('timetable', {action: action});
+      } else if (mode == 'schedule') {
+        targetFields = $('#scheduleForm');
       } else if (mode == 'reset') {
         targetFields = $('');
         socket.emit('reset', {});
@@ -163,6 +169,10 @@ $(function () {
       if (action == 'start') {
         targetFields.show();
       }
+    });
+
+    $('body').on('click', '#scheduleButton', function () {
+      socket.emit('schedule', {from: $('#inputFrom').val(), to: $('#inputTo').val()});
     });
 
     $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module5', function () {
