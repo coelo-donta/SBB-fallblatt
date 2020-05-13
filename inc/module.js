@@ -348,7 +348,16 @@ module.exports = class Module extends ModuleController {
         }
         // display train type
         if (schedule.train[0] == 'S') {
-          schedule.train += ' S-Bahn';
+          let sbahns = ['S11', 'S12', 'S29'];
+          console.log(schedule.train);
+          if (sbahns.findIndex(e => e == schedule.train) >= 0) {
+            console.log(schedule.train);
+            schedule.train += ' S-Bahn';
+          } else {
+            console.log(schedule.train);
+            schedule.train = 'S S-Bahn schwarz';
+          }
+          console.log(schedule.train);
         } else if (schedule.train.slice(0,2) == 'RE') {
           schedule.train += ' RegioExpress';
         } else if (schedule.train.slice(0,1) == 'R') {
