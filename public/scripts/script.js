@@ -180,7 +180,7 @@ $(function () {
     });
 
     $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module5', function () {
-      address = this.id;
+      let address = this.id;
       socket.emit('move', {address: address.slice(6), destination: $(this).val()});
     });
   } else {

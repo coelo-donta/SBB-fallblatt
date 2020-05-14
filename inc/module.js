@@ -326,26 +326,39 @@ module.exports = class Module extends ModuleController {
         schedule.delay = connections.from.delay;
         schedule.train = connections.products[0].replace(/\s[0-9]*/g, '');;
         schedule.vias = [];
-        connections.sections[0].journey.passList.forEach(e => schedule.vias.push(e.station.name));
+        if (connections.sections[0].journey != null) {
+          connections.sections[0].journey.passList.forEach(e => schedule.vias.push(e.station.name))
+        };
         schedule.destination = connections.to.station.name;
         
         console.log(schedule);
         let found = [];
         // display time
+        console.log(schedule.hour, schedule.minute);
         found.push(this.find(0, schedule.hour));
-        found.push(this.find(1, schedule.minute));
+        if (schedule.minute == 0) {
+          found.push(this.move(1, 30));
+        } else {
+          found.push(this.find(1, schedule.minute));
+        }
         // display delay
+        // display delay in minute
         if (typeof(schedule.delay) == 'number') {
           schedule.delay = 'ca ' + schedule.delay + [(schedule.delay > 1) ? ' Minuten' : ' Minute'] + ' später';
           found.push(this.find(2, schedule.delay));
-        } else if (typeof(schedule.delay) == 'string') {
+        // display cancellation
+        } else if (false) {
           // todo
-          found.push(this.find(2, schedule.delay));
-        } else {
+          found.push(this.find(2, 'Ausfall'));
+        // display unknown delay
+        } else if (false) {
+          // todo
+          found.push(this.find(2, 'Ausfall'));
+        }else {
           this.move(2, 0);
           found.push(true);
         }
-        // display train type
+        // display train type (or connections.sections[0].journey.category)
         if (schedule.train[0] == 'S') {
           let sbahns = ['S11', 'S12', 'S29'];
           if (sbahns.findIndex(e => e == schedule.train) >= 0) {
@@ -357,6 +370,12 @@ module.exports = class Module extends ModuleController {
           schedule.train += ' RegioExpress';
         } else if (schedule.train.slice(0,1) == 'R') {
           schedule.train += ' Regio';
+        } else if (connections.from.platform != null && connections.from.platform.indexOf('!') >= 0) {
+          // display change of platform
+          schedule.train = 'Gleisänderung';
+        } else if (connections.sections[0].journey != null && connections.sections[0].journey.category == 'B') {
+          console.log(connections.sections[0].journey.category);
+          schedule.train == 'Autobus ab';
         }
         found.push(this.find(3, schedule.train));
         // display via
