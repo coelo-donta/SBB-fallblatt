@@ -25,6 +25,14 @@ vorpal
   })
 
 vorpal
+  .command('manual <command> <address> [value]')
+  .description('send manual commands')
+  .action(function(args, callback) {
+    Actions.manual(args.command, args.address, args.value);
+    callback();
+  });
+
+vorpal
   .command('message')
   .description('get current message')
   .action(function(args, callback) {

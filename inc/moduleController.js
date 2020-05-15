@@ -19,6 +19,18 @@ module.exports = class ModuleController extends UARTController {
     global.server.io.emit('position', {position: 0});
   }
 
+  manual(command, address, value) {
+    if (typeof value == 'undefined') {
+      var data = new Buffer([0xFF, command, address]);
+    } else {
+      var data = new Buffer([0xFF, command, address, value]);
+    }
+
+    UARTController.send(data);
+
+    //global.server.io.emit('position', {position: 0});
+  }
+
   step() {
     this.position++;
 

@@ -103,6 +103,13 @@ module.exports = class Actions {
     vorpal.log(colors.magenta('reset modules to position 0'));
   }
 
+  static manual(command, address, value) {
+    if (!this.isReady) return;
+
+    this.moduleInstance.manual(command, address, value);
+    vorpal.log(colors.magenta('execute command ' + command + ' ' + address + ' ' + value));
+  }
+
   static position() {
     if (!this.isReady) return;
 
