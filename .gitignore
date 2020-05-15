@@ -58,8 +58,10 @@ typings/
 .env
 config/serial.txt
 config/config.json
+config/timetable.json
 .DS_Store
 package-lock.json
 
 # Other
 .vscode
+*.sh
