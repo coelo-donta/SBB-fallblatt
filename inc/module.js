@@ -70,7 +70,6 @@ module.exports = class Module extends ModuleController {
       case 'start':
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
-        clearTimeout(this.timeTimeout);
         this.selectRandomPosition(duration, variation);
         this.switchMode('random');
         break;
@@ -116,7 +115,6 @@ module.exports = class Module extends ModuleController {
       case 'start':
         clearTimeout(this.randomTimeout);
         clearTimeout(this.turnTimeout);
-        clearTimeout(this.timeTimeout);
         this.turnPosition(duration, variation);
         this.switchMode('turn');
         break;
@@ -175,8 +173,8 @@ module.exports = class Module extends ModuleController {
     var minutes = today.getMinutes();
     var min_position = this.minutesToPosition(minutes);
     // set position
-    super.move(0x00, hour);
-    super.move(0x01, min_position);
+    super.move(0x06, hour);
+    super.move(0x07, min_position);
   }
 
   minutesToPosition(minutes) {
@@ -191,7 +189,6 @@ module.exports = class Module extends ModuleController {
   timetable(action) {
     switch (action) {
       case 'start':
-        clearTimeout(this.timeTimeout);
         clearTimeout(this.timetableTimeout);
 
          // display timetable
