@@ -1,3 +1,4 @@
+import {autocomplete} from './autocompleter.js';
 $(function () {
   var socket = io.connect();
   socket.on('connect', function(data) {
@@ -186,6 +187,31 @@ $(function () {
       fromField.value = toField.value;
       toField.value = temp;
     });
+
+    // autocomplete for schedule
+    $('body').on('keydown', function () {
+      var field = document.activeElement.value;
+      let url = 'https://transport.opendata.ch' + '/v1/locations?query=' + field + '&type=station';
+      httpGetAsync (url, autocompleter)
+    });
+
+    function autocompleter(response) {
+      let stations = [];
+      response.stations.forEach(e => stations.push(e.name));
+      console.log(stations);
+      console.log(document.activeElement);
+      autocomplete(document.activeElement, stations);
+    }
+
+    function httpGetAsync(url, callback) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = function() {
+          if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+              callback(JSON.parse(xmlHttp.responseText));
+      }
+      xmlHttp.open("GET", url, true);
+      xmlHttp.send(null);
+    }
 
     $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module5', function () {
       let address = this.id;

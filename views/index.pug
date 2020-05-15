@@ -58,12 +58,11 @@ block content
   .row#scheduleForm
     .col-md-12
       div.form-inline
-        div.form-group.form-field
+        div.form-group.form-field.autocomplete
           label(for='from')
           input#inputFrom.form-control.form-input(type='text', placeholder='From' name='from')
-        button#oppositeButton.btn.round-button(type='submit')
-          p &#8646;
-        div.form-group.form-field
+        button#oppositeButton.btn.round-button(type='submit') &#8646;
+        div.form-group.form-field.autocomplete
           label(for='to')
           input#inputTo.form-control(type='text', placeholder='To' name='to')
       button#scheduleButton.btn(type='submit') Search Connection
