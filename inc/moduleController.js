@@ -28,6 +28,15 @@ module.exports = class ModuleController extends UARTController {
 
     UARTController.send(data);
 
+    UARTController.port.on('open', function() {
+      console.log("open");
+    });
+    UARTController.port.on('data', function(data) {
+      console.log(data);
+    });
+    UARTController.port.on('close', function () {
+      console.log('closed');
+    });
     //global.server.io.emit('position', {position: 0});
   }
 
