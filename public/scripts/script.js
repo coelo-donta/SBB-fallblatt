@@ -179,6 +179,14 @@ $(function () {
       socket.emit('schedule', {from: $('#inputFrom').val(), to: $('#inputTo').val()});
     });
 
+    $('body').on('click', '#oppositeButton', function () {
+      let fromField = document.getElementById("inputFrom");
+      let toField = document.getElementById("inputTo");
+      let temp = fromField.value;
+      fromField.value = toField.value;
+      toField.value = temp;
+    });
+
     $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module5', function () {
       let address = this.id;
       socket.emit('move', {address: address.slice(6), destination: $(this).val()});

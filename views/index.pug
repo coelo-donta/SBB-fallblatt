@@ -3,7 +3,7 @@ block content
   .row
     .col-md-12
       h4 Mode
-      select#mode
+      select#mode.form-control
         option(value="static") Static
         option(value="turn") Stepper
         option(value="random") Random
@@ -57,13 +57,16 @@ block content
         option(value="600") 10 minute
   .row#scheduleForm
     .col-md-12
-      div.form-group
-        label(for='from') From:
-        input#inputFrom.form-control(type='text', placeholder='From' name='from')
-      div.form-group
-        label(for='to') To:
-        input#inputTo.form-control(type='text', placeholder='To' name='to')
-      button#scheduleButton.btn.btn-primary(type='submit') Search Connection
+      div.form-inline
+        div.form-group.form-field
+          label(for='from')
+          input#inputFrom.form-control.form-input(type='text', placeholder='From' name='from')
+        button#oppositeButton.btn.round-button(type='submit')
+          p &#8646;
+        div.form-group.form-field
+          label(for='to')
+          input#inputTo.form-control(type='text', placeholder='To' name='to')
+      button#scheduleButton.btn(type='submit') Search Connection
   .row
     .col-md-12
       h4 Message

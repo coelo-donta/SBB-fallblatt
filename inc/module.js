@@ -312,7 +312,7 @@ module.exports = class Module extends ModuleController {
         // handle response
         // only interested in the first result
         if (response.connections.length == 0) {
-          this.reset();
+          [0,1,2,3,4,5].forEach(e => this.move(e, 0));
           return;
         }
         let connections = response.connections[0];

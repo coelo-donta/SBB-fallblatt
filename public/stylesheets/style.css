@@ -119,6 +119,22 @@ input {
   margin: -3px -8px;
   font-weight: bold;
 }
+.btn {
+  border: 1px solid #ccc;
+}
+.round-button {
+  width: 2em;
+  height: 2em;
+  border: 1px solid #ccc;
+  border-radius: 1em;
+  padding: 0.32em 0.45em;
+  margin: 15px;
+}
+@media screen and (max-width: 600px) {
+  .round-button {
+    margin: 0 15px;
+  }
+}
 #turnVariationLine,
 #turnDurationLine,
 #randomVariationLine,
