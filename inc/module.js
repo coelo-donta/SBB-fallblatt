@@ -296,7 +296,7 @@ module.exports = class Module extends ModuleController {
 
   schedule(from, to) {
 
-    let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' + to + '&datetime=';
+    let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' + to + '&datetime=&transportations=train';
 
     // get schedule
     https.get(url, res => {
@@ -367,12 +367,12 @@ module.exports = class Module extends ModuleController {
           schedule.train += ' RegioExpress';
         } else if (schedule.train.slice(0,1) == 'R') {
           schedule.train += ' Regio';
-        } else if (connections.from.platform != null && connections.from.platform.indexOf('!') >= 0) {
-          // display change of platform
-          schedule.train = 'Gleisänderung';
         } else if (connections.sections[0].journey != null && connections.sections[0].journey.category == 'B') {
-          console.log(connections.sections[0].journey.category);
           schedule.train == 'Autobus ab';
+        }
+        // display change of platforms
+        if (connections.from.platform != null && connections.from.platform.indexOf('!') >= 0) {
+          schedule.train = 'Gleisänderung';
         }
         found.push(this.find(3, schedule.train));
         // display via
