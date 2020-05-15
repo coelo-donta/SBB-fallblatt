@@ -332,7 +332,6 @@ module.exports = class Module extends ModuleController {
         console.log(schedule);
         let found = [];
         // display time
-        console.log(schedule.hour, schedule.minute);
         found.push(this.find(0, schedule.hour));
         if (schedule.minute == 0) {
           found.push(this.move(1, 30));
@@ -357,7 +356,9 @@ module.exports = class Module extends ModuleController {
           found.push(true);
         }
         // display train type (or connections.sections[0].journey.category)
-        if (schedule.train[0] == 'S') {
+        if (schedule.train.slice(0,2) == 'SN') {
+          schedule.train = 'SN MIT ZUSCHLAG';
+        } else if (schedule.train[0] == 'S') {
           let sbahns = ['S11', 'S12', 'S29'];
           if (sbahns.findIndex(e => e == schedule.train) >= 0) {
             schedule.train += ' S-Bahn';
