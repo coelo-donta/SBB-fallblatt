@@ -89,13 +89,13 @@ Response: <br>
 
 
 ### `ZERO` Move motor to null position
-`FF C6 <ADDR>`
+`FF C5 <ADDR>`
 
 Note: on hour modules, zero is "0." and on minute modules "31"
 
 #### Example
 Address: 29
-`FF C6 1D`<br>
+`FF C5 1D`<br>
 
 
 ### `STEP` Move motor one blade
