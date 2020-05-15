@@ -296,7 +296,8 @@ module.exports = class Module extends ModuleController {
 
   schedule(from, to) {
 
-    let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' + to + '&datetime=&transportations=train';
+    let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' +
+      to + '&datetime=' + '&transportations=train&limit=1';
 
     // get schedule
     https.get(url, res => {
