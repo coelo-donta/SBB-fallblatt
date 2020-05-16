@@ -5,6 +5,7 @@ html(lang='en')
     title Fallblatt SBB
     script(src='/socket.io/socket.io.js')
     script(src='/scripts/jquery.js')
+    script(src='/scripts/clock.js')
     script(type="module" src='/scripts/script.js')
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
@@ -14,13 +15,11 @@ html(lang='en')
         .row
           .col-md-12
             h1
-              | Fallblatt 
-              small
-                | module 
-                span.info-address
+              | Fallblatt
         .row
           .col-md-12
             include nav.pug
+      canvas#clock
     section
       .container
         .row
