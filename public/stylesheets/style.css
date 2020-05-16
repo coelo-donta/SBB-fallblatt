@@ -134,6 +134,9 @@ input {
   .round-button {
     margin: 0 15px;
   }
+  .form-group {
+    width: 40%;
+  }
 }
 .autocomplete {
   position: relative;
