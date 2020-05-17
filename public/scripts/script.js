@@ -90,19 +90,7 @@ $(function () {
       $('#mode').val(data.mode);
       $('#module').val(data.position);
 
-      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine, #scheduleForm').hide()
-
-      if (data.mode == 'turn') {
-        $('#turnDurationLine, #turnVariationLine').show();
-        $('#turnDuration').val(data.turnDuration);
-        $('#turnVariation').val(data.turnVariation);
-      }
-
-      if (data.mode == 'random') {
-        $('#randomDurationLine, #randomVariationLine').show();
-        $('#randomDuration').val(data.randomDuration);
-        $('#randomVariation').val(data.randomVariation);
-      }
+      $('#scheduleForm').hide()
 
       if (data.mode == 'schedule') {
         $('#scheduleForm').show();
@@ -118,8 +106,6 @@ $(function () {
       $('#info-type').text(data.type);
       $('#info-mode').text(data.mode);
       $('#info-position').text(data.position);
-      $('#info-duration').text((data.mode == 'turn') ? data.turnDuration : data.randomDuration);
-      $('#info-variation').text((data.mode == 'turn') ? data.turnVariation : data.randomVariation);
     }
 
     $('.info-address').text(data.address);
@@ -140,20 +126,14 @@ $(function () {
     $('#modules').append('<div class="track-number"><span class="track-title">Gleis</span>1</div>');
     socket.emit('list');
 
-    $('body').on('change', '#mode, #turnDuration, #turnVariation, #randomDuration, #randomVariation', function () {
+    $('body').on('change', '#mode', function () {
       var mode = $('#mode').val();
       var action = (mode == 'static') ? 'stop' : 'start';
       var targetFields;
 
-      $('#turnVariationLine, #turnDurationLine, #randomVariationLine, #randomDurationLine, #scheduleForm').hide()
+      $('#scheduleForm').hide()
 
-      if (mode == 'turn') {
-        targetFields = $('#turnVariationLine, #turnDurationLine');
-        socket.emit('turn', {action: action, duration: $('#turnDuration').val(), variation: $('#turnVariation').val()});
-      } else if (mode == 'random') {
-        targetFields = $('#randomVariationLine, #randomDurationLine');
-        socket.emit('random', {action: action, duration: $('#randomDuration').val(), variation: $('#randomVariation').val()});
-      } else if (mode == 'time') {
+      if (mode == 'time') {
         targetFields = $('');
         socket.emit('time', {action: action});
       } else if (mode == 'timetable') {
