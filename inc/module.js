@@ -143,11 +143,11 @@ module.exports = class Module extends ModuleController {
         this.updateTime();
 
         // update on second 0
-        var seconds = new Date().getSeconds();
-        var diff = 60-seconds;
+        let today = new Date()
+        var diff = 60000-today.getSeconds()*1000-today.getMilliseconds();
         setTimeout(() => {
           this.displayTime();
-        }, diff*1000);
+        }, diff);
 
         this.switchMode('time');
         break;
@@ -161,9 +161,11 @@ module.exports = class Module extends ModuleController {
   displayTime() {
     this.updateTime();
     // then update every 60 seconds
+    let today = new Date()
+    var diff = 60005-today.getSeconds()*1000-today.getMilliseconds();
     this.timeTimeout = setTimeout(() => {
       this.displayTime();
-    }, 60000);
+    }, diff);
   }
 
   updateTime() {
