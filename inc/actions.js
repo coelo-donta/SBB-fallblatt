@@ -20,31 +20,13 @@ module.exports = class Actions {
       Module.connectionPromise.then(() => {
         this.initMessage();
 
-        setTimeout(() => {
+        clearInterval(this.initMessageInterval);
+        this.moduleInstance.reset();
+        this.isReady = true;
+        global.server.io.emit('status', Actions.status(global.server.isConnected));
+        vorpal.ui.redraw(colors.green('system is ready'));
+        resolve();
 
-          let stepCount = 0;
-          let stepInterval = setInterval(() => {
-            this.moduleInstance.step();
-            stepCount++
-
-            if (stepCount == this.moduleInstance.messages.length) {
-              clearTimeout(stepInterval);
-
-              setTimeout(() => {
-                clearInterval(this.initMessageInterval);
-
-                this.moduleInstance.reset();
-                this.isReady = true;
-
-                global.server.io.emit('status', Actions.status(global.server.isConnected));
-
-                vorpal.ui.redraw(colors.green('system is ready'));
-
-                resolve();
-              }, 1000);
-            }
-          }, 260);
-        }, 1000);
       });
     });
     //isReadyPromise.push(isReadyPromiseTemp);
