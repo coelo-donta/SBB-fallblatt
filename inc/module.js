@@ -188,6 +188,12 @@ module.exports = class Module extends ModuleController {
     return position;
   }
 
+  date() {
+    let today = new Date();
+    super.move(0x06, today.getMonth() + 1);
+    super.move(0x07, this.minutesToPosition(today.getDate()));
+  }
+
   timetable(action) {
     switch (action) {
       case 'start':

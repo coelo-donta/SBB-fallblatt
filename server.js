@@ -106,6 +106,14 @@ vorpal
   });
 
 vorpal
+  .command('date')
+  .description('display the date')
+  .action(function(args, callback) {
+    Actions.date();
+    callback();
+  });
+
+vorpal
   .command('timetable <action>')
   .description('get and display timetable')
   .action(function(args, callback) {

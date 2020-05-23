@@ -172,6 +172,14 @@ module.exports = class Actions {
     vorpal.log(colors.magenta(action + ' displaying time'));
   }
 
+  static date() {
+    if (!this.isReady) return;
+
+    this.moduleInstance.date();
+
+    vorpal.log(colors.magenta('displaying date'));
+  }
+
   static timetable(action) {
     if (!this.isReady) return;
 
