@@ -302,13 +302,13 @@ module.exports = class Module extends ModuleController {
       to + '&datetime=' + '&transportations=train&limit=1';
 
     // get schedule
-    https.get(url, res => {
-      res.setEncoding("utf8");
-      let response = "";
-      res.on("data", data => {
+    let req = https.get(url, res => {
+      res.setEncoding('utf8');
+      let response = '';
+      res.on('data', data => {
         response += data;
       });
-      res.on("end", () => {
+      res.on('end', () => {
         response = JSON.parse(response);
 
         // handle response
@@ -394,6 +394,10 @@ module.exports = class Module extends ModuleController {
 
       });
     });
+    req.on('error', (err) => {
+      vorpal.log(colors.red('schedule request connection error ' + err));
+    });
+    req.end();
     return ;
   }
 
