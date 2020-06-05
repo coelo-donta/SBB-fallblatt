@@ -260,23 +260,45 @@ module.exports = class Module extends ModuleController {
       schedule_hours.push(element.hour);
     });
 
-    // get index of next hour and minute
-    let next_index_hour = schedule_hours.findIndex(element => element >= hour);
-    let next_index_minute = schedule_minutes.slice(next_index_hour).findIndex(element => element > minute);
-    // if no minute found (-1) restart looking from 0 starting at next hour
-    if (next_index_minute < 0) {
-      next_index_hour = schedule_hours.findIndex(element => element >= hour + 1);
-      next_index_minute = schedule_minutes.slice(next_index_hour).findIndex(element => element > -1);
-    }
-    // if no hour found (-1) restart looking from hour 0
-    if (next_index_hour < 0) {
-      next_index_hour = schedule_hours.findIndex(element => element >= -1);
-      next_index_minute = schedule_minutes.slice(next_index_hour).findIndex(element => element > -1);;
-    }
-    // add hour index because we sliced
-    next_index_minute = next_index_minute + next_index_hour;
+    let next_index_hour = -1;
+    let next_index_hour_plus_one = -1;
+    let next_index_minute = -1;
+    let current_minutes;
+    let hour_iter = hour;
+    let next_index;
 
-    let next_index = next_index_minute;
+    while(next_index_minute == -1 || next_index_hour == -1) {
+      next_index_hour = schedule_hours.findIndex(element => element >= hour_iter);
+      next_index_hour_plus_one = schedule_hours.findIndex(element => element > hour_iter);
+
+      // if no hour found start new day
+      if (next_index_hour_plus_one == -1) {
+        hour_iter = 0;
+        continue;
+      }
+      // if last hour of schedule slice at end
+      if (next_index_hour_plus_one == -1) {
+        next_index_hour_plus_one = schedule_hours.length;
+        continue;
+      }
+      // find minutes of current hour
+      current_minutes = schedule_minutes.slice(next_index_hour, next_index_hour_plus_one)
+      // find next minute
+      if (hour_iter == hour) {
+        next_index_minute = current_minutes.findIndex(element => element >= minute);
+      } else {
+        next_index_minute = current_minutes.findIndex(element => element >= 0);
+      }
+      // add hour index because we sliced
+      if (next_index_minute > -1) {
+        next_index = next_index_minute + next_index_hour
+      }
+      
+      hour_iter++;
+      if (hour_iter > 23) {break;}
+    }
+    
+    console.log(timetable.timetable[next_index]);
 
     // display timetable
     this.find(0, timetable.timetable[next_index].hour);
