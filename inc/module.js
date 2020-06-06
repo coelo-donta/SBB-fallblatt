@@ -266,20 +266,20 @@ module.exports = class Module extends ModuleController {
     let current_minutes;
     let hour_iter = hour;
     let next_index;
+    let n_iter = 0;
 
     while(next_index_minute == -1 || next_index_hour == -1) {
       next_index_hour = schedule_hours.findIndex(element => element >= hour_iter);
       next_index_hour_plus_one = schedule_hours.findIndex(element => element > hour_iter);
 
       // if no hour found start new day
-      if (next_index_hour_plus_one == -1) {
+      if (hour_iter > 23) {
         hour_iter = 0;
         continue;
       }
       // if last hour of schedule slice at end
       if (next_index_hour_plus_one == -1) {
         next_index_hour_plus_one = schedule_hours.length;
-        continue;
       }
       // find minutes of current hour
       current_minutes = schedule_minutes.slice(next_index_hour, next_index_hour_plus_one)
@@ -294,15 +294,16 @@ module.exports = class Module extends ModuleController {
         next_index = next_index_minute + next_index_hour
       }
       
+      n_iter++;
+      if (n_iter > 25) {break;}
       hour_iter++;
-      if (hour_iter > 23) {break;}
     }
-    
+
     console.log(timetable.timetable[next_index]);
 
     // display timetable
-    this.find(0, timetable.timetable[next_index].hour);
     this.move(1, this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
+    this.find(0, timetable.timetable[next_index].hour);
     this.find(2, timetable.timetable[next_index].delay);
     this.find(3, timetable.timetable[next_index].train);
     this.find(4, timetable.timetable[next_index].via);
