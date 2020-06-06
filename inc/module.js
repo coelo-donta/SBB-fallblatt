@@ -302,12 +302,7 @@ module.exports = class Module extends ModuleController {
 
     // display timetable
     this.find(0, timetable.timetable[next_index].hour);
-    this.find(1, timetable.timetable[next_index].minute);
-    if (timetable.timetable[next_index].minute == 0) {
-      this.move(1, 30);
-    } else {
-      this.find(1, timetable.timetable[next_index].minute);
-    }
+    this.move(1, this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
     this.find(2, timetable.timetable[next_index].delay);
     this.find(3, timetable.timetable[next_index].train);
     this.find(4, timetable.timetable[next_index].via);
