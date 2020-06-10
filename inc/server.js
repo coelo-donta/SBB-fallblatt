@@ -38,6 +38,12 @@ module.exports = class Server {
         }
       });
 
+      client.on('light', (data) => {
+        Actions.light();
+
+        client.emit('light', {success: true, status: Actions.status()});
+      });
+
       client.on('reset', (data) => {
         Actions.reset();
 

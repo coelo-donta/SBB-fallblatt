@@ -126,6 +126,19 @@ $(function () {
     $('#modules').append('<div class="track-number"><span class="track-title">Gleis</span>1</div>');
     socket.emit('list');
 
+    $('body').on('click', '#lightswitch', function () {
+      let switcher = document.getElementById("lightswitch");
+      if (switcher.value == 0) {
+        socket.emit('light', {status: "on"});
+        switcher.children[0].innerText = "\uD83C\uDF1E";
+        switcher.value = 1;
+      } else {
+        socket.emit('light', {status: "off"});
+        switcher.children[0].innerText = "\uD83C\uDF1A";
+        switcher.value = 0;
+      }
+    });
+
     $('body').on('change', '#mode', function () {
       var mode = $('#mode').val();
       var action = (mode == 'static') ? 'stop' : 'start';
