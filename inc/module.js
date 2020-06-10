@@ -4,6 +4,7 @@ const fs = require('fs');
 const ModuleController = require('./moduleController');
 const path=require("path");
 const https = require('https');
+const Gpio = require('onoff').Gpio;
 
 module.exports = class Module extends ModuleController {
   constructor(address, type) {
@@ -26,6 +27,20 @@ module.exports = class Module extends ModuleController {
     this.mode = mode;
 
     global.server.io.emit('mode', {mode: this.mode});
+  }
+
+  light(status) {
+    let illum = new Gpio(17, 'out');
+    console.log(status)
+    console.log(illum.readSync());
+    if (status == 'on') {
+      illum.writeSync(0);
+    } else if (status == 'off') {
+      illum.writeSync(1);
+      illum.unexport();
+    } else {
+      return
+    }
   }
 
   message() {

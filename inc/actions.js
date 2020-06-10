@@ -72,6 +72,13 @@ module.exports = class Actions {
     }
   }
 
+  static light(status) {
+    if (!this.isReady) return;
+
+    this.moduleInstance.light(status);
+    vorpal.log(colors.magenta('turned the light to ' + status));
+  }
+
   static reset() {
     if (!this.isReady) return;
 

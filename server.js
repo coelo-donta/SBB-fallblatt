@@ -17,6 +17,14 @@ vorpal
   })
 
 vorpal
+  .command('light <status>')
+  .description('turn the light on/off')
+  .action(function(args, callback) {
+    Actions.light(args.status);
+    callback();
+  });
+
+vorpal
   .command('reset')
   .description('reset module position')
   .action(function(args, callback) {
