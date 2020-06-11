@@ -30,15 +30,32 @@ module.exports = class Module extends ModuleController {
   }
 
   light(status) {
-    let illum = new Gpio(17, 'out');
-    if (status == 'on') {
-      illum.writeSync(0);
-      global.server.io.emit('light', {status: 'on'});
-    } else if (status == 'off') {
-      illum.writeSync(1);
-      global.server.io.emit('light', {status: 'off'});
+    if (Gpio.accessible) {
+      toggle_gpio(status);
+      toggle_icon(status);
     } else {
-      return
+      toggle_icon(status);
+    }
+
+    function toggle_icon(status){
+      if (status == 'on') {
+        global.server.io.emit('light', {status: 'on'});
+      } else if (status == 'off') {
+        global.server.io.emit('light', {status: 'off'});
+      } else {
+        return
+      }
+    }
+
+    function toggle_gpio(status){
+      let illum = new Gpio(17, 'out');
+      if (status == 'on') {
+        illum.writeSync(0);
+      } else if (status == 'off') {
+        illum.writeSync(1);
+      } else {
+        return
+      }
     }
   }
 
