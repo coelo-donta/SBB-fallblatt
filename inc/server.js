@@ -39,9 +39,9 @@ module.exports = class Server {
       });
 
       client.on('light', (data) => {
-        Actions.light();
+        Actions.light(data.status);
 
-        client.emit('light', {success: true, status: Actions.status()});
+        client.emit('light', {status: data.status});
       });
 
       client.on('reset', (data) => {
@@ -127,6 +127,11 @@ module.exports = class Server {
     this.app.get('/status', (req, res) => {
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(Actions.status(this)));
+    });
+
+    this.app.get('/light', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({success: true, status: Actions.status()}));
     });
 
     this.app.get('/message', function (req, res) {

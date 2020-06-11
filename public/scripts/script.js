@@ -85,6 +85,16 @@ $(function () {
     $('#mode').val(data.mode);
   });
 
+  socket.on('light', function(data) {
+    if (data.status == "on") {
+      $('#lightswitch')[0].innerText = "\uD83C\uDF1E";
+      $('#lightswitch').val(1);
+    } else {
+      $('#lightswitch')[0].innerText = "\uD83C\uDF1A";
+      $('#lightswitch').val(0);
+    }
+  });
+
   socket.on('status', function(data) {
     if ($('body').hasClass('index')) {
       $('#mode').val(data.mode);
@@ -126,15 +136,16 @@ $(function () {
     $('#modules').append('<div class="track-number"><span class="track-title">Gleis</span>1</div>');
     socket.emit('list');
 
+    $('body').on('load', '#lightswitch', function () {
+      socket.emit('light', {status: "off"});
+    });
     $('body').on('click', '#lightswitch', function () {
       let switcher = document.getElementById("lightswitch");
       if (switcher.value == 0) {
         socket.emit('light', {status: "on"});
-        switcher.children[0].innerText = "\uD83C\uDF1E";
         switcher.value = 1;
       } else {
         socket.emit('light', {status: "off"});
-        switcher.children[0].innerText = "\uD83C\uDF1A";
         switcher.value = 0;
       }
     });
@@ -191,8 +202,6 @@ $(function () {
     function autocompleter(response) {
       let stations = [];
       response.stations.forEach(e => stations.push(e.name));
-      console.log(stations);
-      console.log(document.activeElement);
       autocomplete(document.activeElement, stations);
     }
 

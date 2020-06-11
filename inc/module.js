@@ -31,13 +31,12 @@ module.exports = class Module extends ModuleController {
 
   light(status) {
     let illum = new Gpio(17, 'out');
-    console.log(status)
-    console.log(illum.readSync());
     if (status == 'on') {
       illum.writeSync(0);
+      global.server.io.emit('light', {status: 'on'});
     } else if (status == 'off') {
       illum.writeSync(1);
-      illum.unexport();
+      global.server.io.emit('light', {status: 'off'});
     } else {
       return
     }
