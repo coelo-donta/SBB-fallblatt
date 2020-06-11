@@ -13,7 +13,7 @@ module.exports = class ModuleController extends UARTController {
   reset() {
     this.position = 0;
 
-    let data = new Buffer([0xFF, 0xC5, this.address]);
+    let data = new Buffer.from([0xFF, 0xC5, this.address]);
     UARTController.send(data);
 
     global.server.io.emit('position', {position: 0});
@@ -21,9 +21,9 @@ module.exports = class ModuleController extends UARTController {
 
   manual(command, address, value) {
     if (typeof value == 'undefined') {
-      var data = new Buffer([0xFF, command, address]);
+      var data = new Buffer.from([0xFF, command, address]);
     } else {
-      var data = new Buffer([0xFF, command, address, value]);
+      var data = new Buffer.from([0xFF, command, address, value]);
     }
 
     UARTController.send(data);
@@ -45,7 +45,7 @@ module.exports = class ModuleController extends UARTController {
 
     if (this.position >= this.bladeCount) this.position = 0;
 
-    let data = new Buffer([0xFF, 0xC6, this.address]);
+    let data = new Buffer.from([0xFF, 0xC6, this.address]);
     UARTController.send(data);
     // address 100 = send to all
     global.server.io.emit('position', {address: 100});
@@ -56,7 +56,7 @@ module.exports = class ModuleController extends UARTController {
 
     this.position = index;
 
-    let data = new Buffer([0xFF, 0xC0, address, index]);
+    let data = new Buffer.from([0xFF, 0xC0, address, index]);
     UARTController.send(data);
 
     global.server.io.emit('position', {address: address, position: this.position});
