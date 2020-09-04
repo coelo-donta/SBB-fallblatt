@@ -1,0 +1,404 @@
+{
+  "timetable": [
+    {
+      "hour": "10",
+      "minute": "24",
+      "delay": "",
+      "train": "SN MIT ZUSCHLAG",
+      "via": "WINTERTHUR STADELHOFEN ZÜRICH HB",
+      "destination": "Dietikon"
+    },
+    {
+      "hour": "0",
+      "minute": "56",
+      "delay": "",
+      "train": "IC",
+      "via": "Winterthur",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "0",
+      "minute": "31",
+      "delay": "",
+      "train": "",
+      "via": "",
+      "destination": ""
+    },
+    {
+      "hour": "3",
+      "minute": "00",
+      "delay": "MIT ZUSCHLAG",
+      "train": "Eilzug",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Ossingen"
+    },
+    {
+      "hour": "3",
+      "minute": "12",
+      "delay": "MIT ZUSCHLAG",
+      "train": "SN",
+      "via": "WINTERTHUR STETTBACH STADELHOFEN ZÜRICH HB",
+      "destination": "Zürich Hardbrücke"
+    },
+    {
+      "hour": "6",
+      "minute": "13",
+      "delay": "",
+      "train": "Ersatzzug",
+      "via": "Ohne Halt bis",
+      "destination": "Thalheim-A."
+    },
+    {
+      "hour": "7",
+      "minute": "45",
+      "delay": "",
+      "train": "RE RegioExpress",
+      "via": "Winterthur",
+      "destination": "Kreuzlingen"
+    },
+    {
+      "hour": "7",
+      "minute": "09",
+      "delay": "Umleitung",
+      "train": "Gleisänderung",
+      "via": "LAUTSPRECHER-DURCHSAGEN BEACHTEN",
+      "destination": "Zürich Hardbrücke"
+    },
+    {
+      "hour": "7",
+      "minute": "25",
+      "delay": "ca 8 Minuten später",
+      "train": "Messe-Extrazug",
+      "via": "Ohne Halt bis",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "9",
+      "minute": "00",
+      "delay": "Ausfall",
+      "train": "Militär-Extrazug ",
+      "via": "Ohne Halt bis",
+      "destination": "Kreuzlingen"
+    },
+    {
+      "hour": "10",
+      "minute": "47",
+      "delay": "",
+      "train": "Dampfextrazug",
+      "via": "RESERVATION OBLIGATORISCH",
+      "destination": "Kreuzlingen"
+    },
+    {
+      "hour": "12",
+      "minute": "05",
+      "delay": "ca 1 Minute später",
+      "train": "Dampfextrazug",
+      "via": "WINTERTHUR ZÜRICH HB",
+      "destination": "Baden Brugg"
+    },
+    {
+      "hour": "13",
+      "minute": "27",
+      "delay": "Umleitung",
+      "train": "CIS",
+      "via": "Ohne Halt bis",
+      "destination": "Aarau"
+    },
+    {
+      "hour": "13",
+      "minute": "05",
+      "delay": "",
+      "train": "S12 S-Bahn",
+      "via": "WINTERTHUR STETTBACH STADELHOFEN ZÜRICH HB",
+      "destination": "Baden Brugg"
+    },
+    {
+      "hour": "13",
+      "minute": "52",
+      "delay": "",
+      "train": "Autobus ab",
+      "via": "Oberwinterthur",
+      "destination": "Winterthur"
+    },
+    {
+      "hour": "14",
+      "minute": "45",
+      "delay": "BITTE ANSAGE BEACHTEN",
+      "train": "Zug fällt aus",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Etzwilen"
+    },
+    {
+      "hour": "14",
+      "minute": "07",
+      "delay": "",
+      "train": "S29 S-Bahn",
+      "via": "Oberwinterthur",
+      "destination": "Winterthur"
+    },
+    {
+      "hour": "15",
+      "minute": "22",
+      "delay": "",
+      "train": "S11 S-Bahn",
+      "via": "WINTERTHUR ZÜRICH HB",
+      "destination": "Aarau"
+    },
+    {
+      "hour": "15",
+      "minute": "00",
+      "delay": "",
+      "train": "",
+      "via": "Bitte nicht",
+      "destination": "einsteigen"
+    },
+    {
+      "hour": "15",
+      "minute": "49",
+      "delay": "ca 5 Minuten später",
+      "train": "S S-Bahn rot",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Thalheim-A."
+    },
+    {
+      "hour": "15",
+      "minute": "12",
+      "delay": "",
+      "train": "Eilzug",
+      "via": "MIT HALT AUF ALLEN STATIONEN",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "15",
+      "minute": "39",
+      "delay": "ca 3 Minuten später",
+      "train": "RE RegioExpress",
+      "via": "Winterthur",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "16",
+      "minute": "06",
+      "delay": "",
+      "train": "IR",
+      "via": "WINTERTHUR ZÜRICH HB",
+      "destination": "Aarau"
+    },
+    {
+      "hour": "16",
+      "minute": "23",
+      "delay": "",
+      "train": "S29 S-Bahn",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Stein am Rhein"
+    },
+    {
+      "hour": "17",
+      "minute": "48",
+      "delay": "UNBESTIMMTE VERSPÄTUNG",
+      "train": "EC",
+      "via": "Winterthur",
+      "destination": "Stein am Rhein"
+    },
+    {
+      "hour": "17",
+      "minute": "37",
+      "delay": "",
+      "train": "S29 S-Bahn",
+      "via": "Oberwinterthur",
+      "destination": "Winterthur"
+    },
+    {
+      "hour": "18",
+      "minute": "22",
+      "delay": "",
+      "train": "ICE",
+      "via": "Winterthur",
+      "destination": "Aarau"
+    },
+    {
+      "hour": "18",
+      "minute": "57",
+      "delay": "ca 3 Minuten später",
+      "train": "S11 KURZZUG SEKTOR B",
+      "via": "WINTERTHUR STADELHOFEN",
+      "destination": "Aarau"
+    },
+    {
+      "hour": "18",
+      "minute": "53",
+      "delay": "",
+      "train": "S29 S-Bahn",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Stein am Rhein"
+    },
+    {
+      "hour": "18",
+      "minute": "42",
+      "delay": "",
+      "train": "R Regio",
+      "via": "Winterthur",
+      "destination": "Stein am Rhein"
+    },
+    {
+      "hour": "18",
+      "minute": "39",
+      "delay": "Ausfall",
+      "train": "EC",
+      "via": "RESERVATION OBLIGATORISCH",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "19",
+      "minute": "14",
+      "delay": "",
+      "train": "S12 S-Bahn",
+      "via": "VERKEHRT NICHT VIA ZÜRICH HB",
+      "destination": "Baden Brugg"
+    },
+    {
+      "hour": "19",
+      "minute": "32",
+      "delay": "",
+      "train": "IR",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Stein am Rhein"
+    },
+    {
+      "hour": "19",
+      "minute": "48",
+      "delay": "ca 60 Minuten später",
+      "train": "CIS",
+      "via": "",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "20",
+      "minute": "39",
+      "delay": "",
+      "train": "S12 S-Bahn",
+      "via": "Winterthur",
+      "destination": "Baden Brugg"
+    },
+    {
+      "hour": "20",
+      "minute": "27",
+      "delay": "",
+      "train": "Entlastungszug",
+      "via": "MIT HALT AUF ALLEN STATIONEN",
+      "destination": "Dietikon"
+    },
+    {
+      "hour": "20",
+      "minute": "51",
+      "delay": "",
+      "train": "Bahnersatz - Bus",
+      "via": "ABFAHRT AUF DEM BAHNHOFPLATZ",
+      "destination": "Etzwilen"
+    },
+    {
+      "hour": "20",
+      "minute": "00",
+      "delay": "",
+      "train": "Gleis ausser Betrieb",
+      "via": "ABFAHRT AUF DEM BAHNHOFPLATZ",
+      "destination": "Kreuzlingen"
+    },
+    {
+      "hour": "20",
+      "minute": "09",
+      "delay": "ca 10 Minuten später",
+      "train": "S12 S-Bahn",
+      "via": "WINTERTHUR STADELHOFEN",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "21",
+      "minute": "44",
+      "delay": "ca 7 Minuten später",
+      "train": "EC",
+      "via": "Winterthur",
+      "destination": "Aarau"
+    },
+    {
+      "hour": "21",
+      "minute": "10",
+      "delay": "",
+      "train": "",
+      "via": "Bitte nicht",
+      "destination": "einsteigen"
+    },
+    {
+      "hour": "21",
+      "minute": "17",
+      "delay": "",
+      "train": "S S-Bahn rot",
+      "via": "WINTERTHUR STETTBACH STADELHOFEN ZÜRICH HB",
+      "destination": "Zürich Hardbrücke"
+    },
+    {
+      "hour": "22",
+      "minute": "00",
+      "delay": "",
+      "train": "Dampfextrazug",
+      "via": "Oberwinterthur",
+      "destination": "Stein am Rhein"
+    },
+    {
+      "hour": "22",
+      "minute": "13",
+      "delay": "UNBESTIMMTE VERSPÄTUNG",
+      "train": "EN",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Thalheim-A."
+    },
+    {
+      "hour": "22",
+      "minute": "06",
+      "delay": "Ersatzzug",
+      "train": "ICN",
+      "via": "Winterthur",
+      "destination": "Zürich HB"
+    },
+    {
+      "hour": "23",
+      "minute": "57",
+      "delay": "",
+      "train": "S12 KURZZUG SEKTOR B",
+      "via": "WINTERTHUR STADELHOFEN ZÜRICH HB",
+      "destination": "Baden Brugg"
+    },
+    {
+      "hour": "17",
+      "minute": "55",
+      "delay": "",
+      "train": "Bitte nicht einsteigen",
+      "via": "",
+      "destination": ""
+    },
+    {
+      "hour": "17",
+      "minute": "59",
+      "delay": "",
+      "train": "S29 S-Bahn",
+      "via": "OSSINGEN STAMMHEIM",
+      "destination": "Kreuzlingen"
+    },
+    {
+      "hour": "18",
+      "minute": "03",
+      "delay": "",
+      "train": "S12 SEKTOR B C",
+      "via": "Ohne Halt bis",
+      "destination": "Etzwilen"
+    },
+    {
+      "hour": "23",
+      "minute": "15",
+      "delay": "",
+      "train": "SN",
+      "via": "WINTERTHUR STADELHOFEN ZÜRICH HB",
+      "destination": "Baden Brugg"
+    }
+  ]
+}

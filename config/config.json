@@ -1,0 +1,39 @@
+{
+  "modules" : [
+  {
+    "module": "00",
+    "type": "hour",
+    "serial": "/dev/ttyUSB0"
+  },
+
+  {
+    "module": "01",
+    "type": "minutes",
+    "serial": "/dev/ttyUSB0"
+  },
+
+  {
+    "module": "02",
+    "type": "delay",
+    "serial": "/dev/ttyUSB0"
+  },
+
+  {
+    "module": "03",
+    "type": "train",
+    "serial": "/dev/ttyUSB0"
+  },
+
+  {
+    "module": "04",
+    "type": "via",
+    "serial": "/dev/ttyUSB0"
+  },
+
+  {
+    "module": "11",
+    "type": "destination",
+    "serial": "/dev/ttyUSB0"
+  }
+]
+}
