@@ -33,6 +33,7 @@ h1 {
 }
 .lightswitch {
   font-size: 1.6em;
+  cursor: pointer;
 }
 section {
   min-height: calc(100% - 155px);
