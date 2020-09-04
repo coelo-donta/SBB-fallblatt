@@ -10,7 +10,7 @@ Actions.init().then(() => {
 
 vorpal
   .command('status')
-  .description('reset module position')
+  .description('show module status')
   .action(function(args, callback) {
     Actions.status(server, true);
     callback();
