@@ -176,4 +176,4 @@ The autocomplete code is taken with courtesy from @kasperite [https://stackoverf
 
 
 <hr>
-This project is work in progress and a lot of trial-and-error. Don't hesitate to ask if you have any question, simply drop me a message (<wi828ker38sg@opayq.com>) or open an issue. I hope that I can help.
+This project is work in progress and a lot of trial-and-error. Don't hesitate to ask if you have any question, simply drop me a message at wi828ker38sg@opayq.com or open an issue. I hope that I can help.
