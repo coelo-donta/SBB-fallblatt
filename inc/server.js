@@ -17,7 +17,7 @@ let addr_train = parseInt(config.modules.find(el => el.type === "train").module)
 let addr_via = parseInt(config.modules.find(el => el.type === "via").module);
 let addr_destination = parseInt(config.modules.find(el => el.type === "destination").module);
 let addrs = [addr_hour, addr_minute, addr_delay, addr_train, addr_via, addr_destination];
-let addrs_text = ["hour", "minute", "delay", "train", "via", "destination"];
+let types = ["hour", "minute", "delay", "train", "via", "destination"];
 
 module.exports = class Server {
 
@@ -39,13 +39,13 @@ module.exports = class Server {
 
       client.on('list', (data) => {
         for (var i = 0; i < addrs.length; i++) {
-          client.emit('list', {address: addrs[i], address_text: addrs_text[i], data: Actions.list(addrs[i], false)});
+          client.emit('list', {address: addrs[i], type: types[i], data: Actions.list(addrs[i], false)});
         }
       });
 
       client.on('position', (data) => {
         for (var i = 0; i < addrs.length; i++) {
-          client.emit('position', {address: addrs[i], address_text: addrs_text[i], data: Actions.position()});
+          client.emit('position', {address: addrs[i], type: types[i], data: Actions.position()});
         }
       });
 

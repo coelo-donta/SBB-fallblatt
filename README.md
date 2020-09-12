@@ -64,7 +64,7 @@ npm install
 This should install node version `10.10.1` and npm version `6.14.4`.
 
 Set the texts of your flaps into the files `config/<module number>.json`. Change the module numbers and types in the file `config/config.json` to reflect your setup.
-> The module number is usually written with pencil on top of the module. The current code has the addresses hardcoded in various places and assumes `0` and `1` for the hour and minute, `2` for the delay, `3` for the train type, `4` for the via station, and `5` for the destination. `6` and `7` are used for the clock.
+> The module number is usually written with pencil on top of the module.
 
 Start the application by running
 
@@ -103,13 +103,13 @@ Commands:
 ```
 Examples:
 
-> light on							% turn on the light
-> manual 0xC0 0x03 0x13				% move module 3 to position 19
-> list 4							% list texts of module 4
-> find 3 ICN						% find and display ICN on module 3
-> move 2 20							% move module 2 to position 20
-> time start						% start displaying the time
-> timetable stop					% stop displaying the timetable
+> light on				% turn on the light
+> manual 0xC0 0x03 0x13			% move module 3 to position 19
+> list 4				% list texts of module 4
+> find 3 ICN				% find and display ICN on module 3
+> move 2 20				% move module 2 to position 20
+> time start				% start displaying the time
+> timetable stop			% stop displaying the timetable
 > schedule romanshorn zürich		% show next connection from romanshorn to zurich
 ```
 

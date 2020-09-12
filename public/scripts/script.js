@@ -1,4 +1,7 @@
 import {autocomplete} from './autocompleter.js';
+
+let addrs = ["hour", "minute", "delay", "train", "via", "destination"];
+
 $(function () {
   var socket = io.connect();
   socket.on('connect', function(data) {
@@ -8,26 +11,26 @@ $(function () {
   socket.on('position', function(data) {
     if (typeof data.address == 'undefined') {
       // if no module is specified, e.g reset
-      for (let address of [0,1,2,3,4,5]) {
-        let id = '#module' + address;
+      for (let address of addrs) {
+        let id = "#module_" + address;
         $(id).val(data.position);
         cellStyle(id);
       }
     } else if (data.address == 100) {
       // if all modules are targetted, e.g. step
-      for (let address of [0,1,2,3,4,5]) {
+      for (let address of addrs) {
         // create module id
-        let id = '#module' + address;
+        let id = "#module_" + address;
         // get current position
         let current = parseInt($(id).val());
         // set number of blades
-        let blades = (address == 0 | address == 2) ? 40 : 62;
+        let blades = (address == "hour" | address == "delay") ? 40 : 62;
         $(id).val((current+1)%blades);
         cellStyle(id);
       }
     } else {
       // if one module is targeted, eg. static
-      var id = '#module' + data.address;
+      var id = "#module_" + data.type;
       $(id).val(data.position);
       cellStyle(id);
     }
@@ -35,7 +38,7 @@ $(function () {
     function cellStyle(id) {
       // styling of cells
       let train = $(id);
-      if (id == "#module3") {
+      if (id == "#module_train") {
         let train_style1 = ["EC","EN","IC","ICE","IR","CIS","ICN","Messe-Extrazug","Dampfextrazug","Militär-Extrazug ","Extrazug","Ersatzzug","Entlastungszug","Eilzug"];
         let train_style2 = ["Ausfall","Zug fällt aus","Autobus ab","Bahnersatz - Bus","Streckenunterbruch","Bitte nicht einsteigen","Gleis ausser Betrieb","Betriebsstörung","Gleisänderung"];
         let train_style3 = ["R Regio", "S S-Bahn schwarz","S12 S-Bahn","S29 S-Bahn","S12 KURZZUG SEKTOR B","S12 SEKTOR A B","S12 SEKTOR B C","S11 S-Bahn","S11 KURZZUG SEKTOR B","S11 SEKTOR A B","S11 SEKTOR B C"];
@@ -61,7 +64,7 @@ $(function () {
           document.getElementById(id.slice(1)).style.background = "#2d327d";
         }
       }
-      if (id == "#module4") {
+      if (id == "#module_via") {
         let via_style1 = ["Bitte nicht","UNBESTIMMTE VERSPÄTUNG","LAUTSPRECHER-DURCHSAGEN BEACHTEN","RESERVATION OBLIGATORISCH","MIT HALT AUF ALLEN STATIONEN","ABFAHRT AUF DEM BAHNHOFPLATZ","Ohne Halt bis","VERKEHRT NICHT VIA ZÜRICH HB"];
         if (via_style1.includes(train[0][$(id).val()].textContent)) {
           document.getElementById(id.slice(1)).style.color = "#fce319";
@@ -69,7 +72,7 @@ $(function () {
           document.getElementById(id.slice(1)).style.color = "#fff";
         }
       }
-      if (id == "#module5") {
+      if (id == "#module_destination") {
         let destination_style1 = ["einsteigen"];
         if (destination_style1.includes(train[0][$(id).val()].textContent)) {
           document.getElementById(id.slice(1)).style.color = "#fce319";
@@ -98,7 +101,7 @@ $(function () {
   socket.on('status', function(data) {
     if ($('body').hasClass('index')) {
       $('#mode').val(data.mode);
-      $('#module').val(data.position);
+      //$('#module').val(data.position);
 
       $('#scheduleForm').hide()
 
@@ -122,7 +125,7 @@ $(function () {
   });
 
   socket.on('list', function(data) {
-    var input = $('<select class="module" id="module' + data.address + '"></select>');
+    var input = $('<select class="module" id="module_' + data.type + '"></select>');
     $.each(data.data, function (index, message) {
       var select = $('<option value="' + index + '">' + ((message.length == 0) ? '–' : message) + '</option>');
       input.append(select);
@@ -215,7 +218,7 @@ $(function () {
       xmlHttp.send(null);
     }
 
-    $('body').on('change', '#module0, #module1, #module2, #module3, #module4, #module5', function () {
+    $('body').on('change', '#module_hour, #module_minute, #module_delay, #module_train, #module_via, #module_destination', function () {
       let address = this.id;
       socket.emit('move', {address: address.slice(6), destination: $(this).val()});
     });
