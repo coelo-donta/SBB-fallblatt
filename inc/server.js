@@ -62,7 +62,7 @@ module.exports = class Server {
       });
 
       client.on('move', (data) => {
-        Actions.move(data.address, data.destination);
+        Actions.move(addrs[types.indexOf(data.address)], data.destination);
 
         client.emit('move', {success: true, status: Actions.status()});
       });

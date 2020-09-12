@@ -220,7 +220,7 @@ $(function () {
 
     $('body').on('change', '#module_hour, #module_minute, #module_delay, #module_train, #module_via, #module_destination', function () {
       let address = this.id;
-      socket.emit('move', {address: address.slice(6), destination: $(this).val()});
+      socket.emit('move', {address: address.slice(7), destination: $(this).val()});
     });
   } else {
     socket.emit('status');
