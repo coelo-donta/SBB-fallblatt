@@ -64,7 +64,7 @@ npm install
 This should install node version `10.10.1` and npm version `6.14.4`.
 
 Set the texts of your flaps into the files `config/<module number>.json`. Change the module numbers and types in the file `config/config.json` to reflect your setup.
-> The module number is usually written with pencil on top of the module.
+> The module number is usually written with pencil on top of the module. The current code has the addresses hardcoded in various places and assumes `0` and `1` for the hour and minute, `2` for the delay, `3` for the train type, `4` for the via station, and `5` for the destination. `6` and `7` are used for the clock.
 
 Start the application by running
 
