@@ -7,6 +7,17 @@ const stylus = require('stylus');
 const nib = require('nib');
 const server = require('http')
 const io = require('socket.io');
+let config = require('../config/config.json');
+
+// get addresses of each module type
+let addr_hour = parseInt(config.modules.find(el => el.type === "hour").module);
+let addr_minute = parseInt(config.modules.find(el => el.type === "minute").module);
+let addr_delay = parseInt(config.modules.find(el => el.type === "delay").module);
+let addr_train = parseInt(config.modules.find(el => el.type === "train").module);
+let addr_via = parseInt(config.modules.find(el => el.type === "via").module);
+let addr_destination = parseInt(config.modules.find(el => el.type === "destination").module);
+let addrs = [addr_hour, addr_minute, addr_delay, addr_train, addr_via, addr_destination];
+let addrs_text = ["hour", "minute", "delay", "train", "via", "destination"];
 
 module.exports = class Server {
 
@@ -27,14 +38,14 @@ module.exports = class Server {
       });
 
       client.on('list', (data) => {
-        for (var address of [0,1,2,3,4,5]) {
-          client.emit('list', {address: address, data: Actions.list(address, false)});
+        for (var i = 0; i < addrs.length; i++) {
+          client.emit('list', {address: addrs[i], address_text: addrs_text[i], data: Actions.list(addrs[i], false)});
         }
       });
 
       client.on('position', (data) => {
-        for (var address of [0,1,2,3,4,5]) {
-          client.emit('position', {address: address, data: Actions.position()});
+        for (var i = 0; i < addrs.length; i++) {
+          client.emit('position', {address: addrs[i], address_text: addrs_text[i], data: Actions.position()});
         }
       });
 

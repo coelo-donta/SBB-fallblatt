@@ -8,7 +8,7 @@
 
   {
     "module": "01",
-    "type": "minutes",
+    "type": "minute",
     "serial": "/dev/ttyUSB0"
   },
 
@@ -31,7 +31,7 @@
   },
 
   {
-    "module": "11",
+    "module": "05",
     "type": "destination",
     "serial": "/dev/ttyUSB0"
   }

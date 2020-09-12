@@ -2,9 +2,19 @@ const colors = require('colors');
 const vorpal = require('vorpal')();
 const fs = require('fs');
 const ModuleController = require('./moduleController');
-const path=require("path");
+const path = require("path");
 const https = require('https');
 const Gpio = require('onoff').Gpio;
+let config = require('../config/config.json');
+
+let types = ["hour", "minute", "delay", "train", "via", "destination"];
+let addr_hour = parseInt(config.modules.find(el => el.type === types[0]).module);
+let addr_minute = parseInt(config.modules.find(el => el.type === types[1]).module);
+let addr_delay = parseInt(config.modules.find(el => el.type === types[2]).module);
+let addr_train = parseInt(config.modules.find(el => el.type === types[3]).module);
+let addr_via = parseInt(config.modules.find(el => el.type === types[4]).module);
+let addr_destination = parseInt(config.modules.find(el => el.type === types[5]).module);
+let addrs = [addr_hour, addr_minute, addr_delay, addr_train, addr_via, addr_destination];
 
 module.exports = class Module extends ModuleController {
   constructor(address, type) {
@@ -90,7 +100,9 @@ module.exports = class Module extends ModuleController {
 
   move(address, position) {
     this.random('stop');
-    super.move(address, position);
+    // send module type for client compatibility
+    let type = types[addrs.indexOf(address)];
+    super.move(address, type, position);
   }
 
   random(action, duration = 10000, variation = 0) {
@@ -113,7 +125,7 @@ module.exports = class Module extends ModuleController {
 
   selectRandomPosition() {
     this.randomTimeout = setTimeout(() => {
-      for (var address of [0,1,2,3,4,5]) {
+      for (var address of addrs) {
         let index = this.findRandomMessage();
         super.move(address, index);
       }
@@ -333,12 +345,12 @@ module.exports = class Module extends ModuleController {
     console.log(timetable.timetable[next_index]);
 
     // display timetable
-    this.move(1, this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
-    this.find(0, timetable.timetable[next_index].hour);
-    this.find(2, timetable.timetable[next_index].delay);
-    this.find(3, timetable.timetable[next_index].train);
-    this.find(4, timetable.timetable[next_index].via);
-    this.find(5, timetable.timetable[next_index].destination);
+    this.move(addr_minute, this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
+    this.find(addr_hour, timetable.timetable[next_index].hour);
+    this.find(addr_delay, timetable.timetable[next_index].delay);
+    this.find(addr_train, timetable.timetable[next_index].train);
+    this.find(addr_via, timetable.timetable[next_index].via);
+    this.find(addr_destination, timetable.timetable[next_index].destination);
 
     let next_schedule_minutes = timetable.timetable[next_index].minute;
     let next_schedule_hours = timetable.timetable[next_index].hour;
@@ -374,7 +386,7 @@ module.exports = class Module extends ModuleController {
         // handle response
         // only interested in the first result
         if (response.connections.length == 0) {
-          [0,1,2,3,4,5].forEach(e => this.move(e, 0));
+          addrs.forEach(e => this.move(e, 0));
           return;
         }
         let connections = response.connections[0];
@@ -396,15 +408,15 @@ module.exports = class Module extends ModuleController {
         // display time
         found.push(this.find(0, schedule.hour));
         if (schedule.minute == 0) {
-          found.push(this.move(1, 30));
+          found.push(this.move(addr_minute, 30));
         } else {
-          found.push(this.find(1, schedule.minute));
+          found.push(this.find(addr_minute, schedule.minute));
         }
         // display delay
         // display delay in minute
         if (typeof(schedule.delay) == 'number') {
           schedule.delay = 'ca ' + schedule.delay + [(schedule.delay > 1) ? ' Minuten' : ' Minute'] + ' später';
-          found.push(this.find(2, schedule.delay));
+          found.push(this.find(addr_delay, schedule.delay));
         // display cancellation
         } else if (false) {
           // todo
@@ -414,7 +426,7 @@ module.exports = class Module extends ModuleController {
           // todo
           found.push(this.find(2, 'Ausfall'));
         }else {
-          this.move(2, 0);
+          this.move(addr_delay, 0);
           found.push(true);
         }
         // display train type (or connections.sections[0].journey.category)
@@ -438,17 +450,17 @@ module.exports = class Module extends ModuleController {
         if (connections.from.platform != null && connections.from.platform.indexOf('!') >= 0) {
           schedule.train = 'Gleisänderung';
         }
-        found.push(this.find(3, schedule.train));
+        found.push(this.find(addr_train, schedule.train));
         // display via
-        this.loadMessagesMapping(4);
+        this.loadMessagesMapping(addr_via);
         schedule.via = this.messages.filter(e => schedule.vias.includes(e));
-        found.push(this.find(4, schedule.via[0]));
+        found.push(this.find(addr_via, schedule.via[0]));
         // display destination
-        found.push(this.find(5, schedule.destination));
+        found.push(this.find(addr_destination, schedule.destination));
         // set all modules to 0 where nothing found
         for (let i = 0; i <= found.length; i++) {
           if (found[i] == false) {
-            this.move(i, 0)
+            this.move(addrs[i], 0)
           };
         };
 
