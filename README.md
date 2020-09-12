@@ -146,7 +146,7 @@ dmesg
 ```
 sudo su
 cd /dev
-chown username ttyUSB0
+chown username /dev/ttyUSB0
 ```
 or
 

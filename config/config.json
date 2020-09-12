@@ -34,6 +34,18 @@
     "module": "05",
     "type": "destination",
     "serial": "/dev/ttyUSB0"
+  },
+
+  {
+    "module": "06",
+    "type": "clock_hour",
+    "serial": "/dev/ttyUSB0"
+  },
+
+  {
+    "module": "07",
+    "type": "clock_minute",
+    "serial": "/dev/ttyUSB0"
   }
 ]
 }

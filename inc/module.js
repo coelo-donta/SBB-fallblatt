@@ -14,6 +14,8 @@ let addr_delay = parseInt(config.modules.find(el => el.type === types[2]).module
 let addr_train = parseInt(config.modules.find(el => el.type === types[3]).module);
 let addr_via = parseInt(config.modules.find(el => el.type === types[4]).module);
 let addr_destination = parseInt(config.modules.find(el => el.type === types[5]).module);
+let addr_clock_hour = parseInt(config.modules.find(el => el.type === "clock_hour").module);
+let addr_clock_minute = parseInt(config.modules.find(el => el.type === "clock_minute").module);
 let addrs = [addr_hour, addr_minute, addr_delay, addr_train, addr_via, addr_destination];
 
 module.exports = class Module extends ModuleController {
@@ -218,8 +220,8 @@ module.exports = class Module extends ModuleController {
     var minutes = today.getMinutes();
     var min_position = this.minutesToPosition(minutes);
     // set position
-    super.move(0x06, hour);
-    super.move(0x07, min_position);
+    super.move(addr_clock_hour, [], hour);
+    super.move(addr_clock_minute, [], min_position);
   }
 
   minutesToPosition(minutes) {
@@ -233,8 +235,8 @@ module.exports = class Module extends ModuleController {
 
   date() {
     let today = new Date();
-    super.move(0x06, today.getMonth() + 1);
-    super.move(0x07, this.minutesToPosition(today.getDate()));
+    super.move(addr_clock_hour, [], today.getMonth() + 1);
+    super.move(addr_clock_minute, [], this.minutesToPosition(today.getDate()));
   }
 
   timetable(action) {
