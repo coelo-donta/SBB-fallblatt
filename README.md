@@ -14,7 +14,7 @@ I used the following hardware.
 
 To run from a computer:
 
-- USB to RS465 adapter [https://www.digitec.ch/de/s1/product/oem-yf-usb-zu-rs485-adapter-diverse-elektronikmodul-5999133](https://www.digitec.ch/de/s1/product/oem-yf-usb-zu-rs485-adapter-diverse-elektronikmodul-5999133)
+- USB to RS485 adapter [https://www.digitec.ch/de/s1/product/oem-yf-usb-zu-rs485-adapter-diverse-elektronikmodul-5999133](https://www.digitec.ch/de/s1/product/oem-yf-usb-zu-rs485-adapter-diverse-elektronikmodul-5999133)
 
 To run independently:
 
@@ -34,7 +34,7 @@ The data cable coming from the station was cut, otherwise everything remained in
 #### Serial Port
 I connected the serial output of the Raspi (GPIO 14/15 = pins 8/10) to the old data output, from where it is conducted to all modules in series. Each side is served through a separate channel, i.e. every module of one side sees all the signals, but only reacts on the signal that is preceded by its address (see the doc for a detailed explanation on the commands).
 
-Instead of using the serial ports of the Raspi, you can also use a USB-RS465 converter plugged directly to your computer. You might need to unlock your serial device (see Debugging section below).
+Instead of using the serial ports of the Raspi, you can also use a USB-RS485 converter plugged directly to your computer. You might need to unlock your serial device (see Debugging section below).
 
 #### Power Supply
 There is a 12 V power supply for the ventilation. The modules get 35 V over a transformer. A 230 V power socket next to the fuses can be used to power the Raspi. 
@@ -56,12 +56,17 @@ The software from [@harkle](https://github.com/harkle/fallblatt-module) is a Nod
 The easiest way to deal with node and npm is via nvm.
 
 ```
-apt-get install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+```
+
+Restart your terminal and run
+
+```
 nvm install 10.20.1
 npm install
 ```
 
-This should install node version `10.10.1` and npm version `6.14.4`.
+This should install node version `10.20.1` and npm version `6.14.4`.
 
 Set the texts of your flaps into the files `config/<module number>.json`. Change the module numbers and types in the file `config/config.json` to reflect your setup.
 > The module number is usually written with pencil on top of the module.
