@@ -62,6 +62,11 @@ config/timetable.json
 .DS_Store
 package-lock.json
 
+# git-secret files
+config/api_secrets.json
+
 # Other
 .vscode
 *.sh
+.gitsecret/keys/random_seed
+!*.secret
