@@ -386,8 +386,8 @@ module.exports = class Module extends ModuleController {
         response = JSON.parse(response);
 
         // handle response
-        // only interested in the first result
-        if (response.connections.length == 0) {
+        // reset if nothing found
+        if (response.hasOwnProperty("errors") || response.connections.length == 0) {
           addrs.forEach(e => this.move(e, 0));
           return;
         }
