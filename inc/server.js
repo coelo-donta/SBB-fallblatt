@@ -7,17 +7,17 @@ const stylus = require('stylus');
 const nib = require('nib');
 const server = require('http')
 const io = require('socket.io');
-let config = require('../config/config.json');
+const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
+let db = new sqlite3.Database(path.resolve(__dirname, '../config/modules.db'));
 
-// get addresses of each module type
-let addr_hour = parseInt(config.modules.find(el => el.type === "hour").module);
-let addr_minute = parseInt(config.modules.find(el => el.type === "minute").module);
-let addr_delay = parseInt(config.modules.find(el => el.type === "delay").module);
-let addr_train = parseInt(config.modules.find(el => el.type === "train").module);
-let addr_via = parseInt(config.modules.find(el => el.type === "via").module);
-let addr_destination = parseInt(config.modules.find(el => el.type === "destination").module);
-let addrs = [addr_hour, addr_minute, addr_delay, addr_train, addr_via, addr_destination];
-let types = ["hour", "minute", "delay", "train", "via", "destination"];
+// find all types
+let types = [];
+let addrs = [];
+db.all(`SELECT DISTINCT address, type FROM modules WHERE is_used == true AND type IN ("hour", "minute", "delay", "train", "via", "destination")`, [], (err, rows) => {
+  if (err) { throw err; }
+  rows.forEach((row) => {types.push(row.type); addrs.push(row.address);});
+});
 
 module.exports = class Server {
 

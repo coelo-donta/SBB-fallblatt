@@ -2,21 +2,19 @@ const colors = require('colors');
 const vorpal = require('vorpal')();
 const fs = require('fs');
 const ModuleController = require('./moduleController');
-const path = require("path");
+const path = require('path');
 const https = require('https');
 const Gpio = require('onoff').Gpio;
-let config = require('../config/config.json');
+const sqlite3 = require('sqlite3').verbose();
+let db = new sqlite3.Database(path.resolve(__dirname, '../config/modules.db'));
 
-let types = ["hour", "minute", "delay", "train", "via", "destination"];
-let addr_hour = parseInt(config.modules.find(el => el.type === types[0]).module);
-let addr_minute = parseInt(config.modules.find(el => el.type === types[1]).module);
-let addr_delay = parseInt(config.modules.find(el => el.type === types[2]).module);
-let addr_train = parseInt(config.modules.find(el => el.type === types[3]).module);
-let addr_via = parseInt(config.modules.find(el => el.type === types[4]).module);
-let addr_destination = parseInt(config.modules.find(el => el.type === types[5]).module);
-let addr_clock_hour = parseInt(config.modules.find(el => el.type === "clock_hour").module);
-let addr_clock_minute = parseInt(config.modules.find(el => el.type === "clock_minute").module);
-let addrs = [addr_hour, addr_minute, addr_delay, addr_train, addr_via, addr_destination];
+// find all types
+let types = [];
+let addrs = [];
+db.all(`SELECT DISTINCT address, type FROM modules WHERE is_used == true`, [], (err, rows) => {
+  if (err) { throw err; }
+  rows.forEach((row) => {types.push(row.type); addrs.push(row.address);});
+});
 
 module.exports = class Module extends ModuleController {
   constructor(address, type) {
@@ -220,8 +218,8 @@ module.exports = class Module extends ModuleController {
     var minutes = today.getMinutes();
     var min_position = this.minutesToPosition(minutes);
     // set position
-    super.move(addr_clock_hour, [], hour);
-    super.move(addr_clock_minute, [], min_position);
+    super.move(addrs[types.indexOf("clock_hour")], [], hour);
+    super.move(addrs[types.indexOf("clock_minute")], [], min_position);
   }
 
   minutesToPosition(minutes) {
@@ -235,8 +233,8 @@ module.exports = class Module extends ModuleController {
 
   date() {
     let today = new Date();
-    super.move(addr_clock_hour, [], today.getMonth() + 1);
-    super.move(addr_clock_minute, [], this.minutesToPosition(today.getDate()));
+    super.move(addrs[types.indexOf("clock_hour")], [], today.getMonth() + 1);
+    super.move(addrs[types.indexOf("clock_minute")], [], this.minutesToPosition(today.getDate()));
   }
 
   timetable(action) {
@@ -347,12 +345,12 @@ module.exports = class Module extends ModuleController {
     console.log(timetable.timetable[next_index]);
 
     // display timetable
-    this.move(addr_minute, this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
-    this.find(addr_hour, timetable.timetable[next_index].hour);
-    this.find(addr_delay, timetable.timetable[next_index].delay);
-    this.find(addr_train, timetable.timetable[next_index].train);
-    this.find(addr_via, timetable.timetable[next_index].via);
-    this.find(addr_destination, timetable.timetable[next_index].destination);
+    this.move(addrs[types.indexOf("minute")], this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
+    this.find(addrs[types.indexOf("hour")], timetable.timetable[next_index].hour);
+    this.find(addrs[types.indexOf("delay")], timetable.timetable[next_index].delay);
+    this.find(addrs[types.indexOf("train")], timetable.timetable[next_index].train);
+    this.find(addrs[types.indexOf("via")], timetable.timetable[next_index].via);
+    this.find(addrs[types.indexOf("destination")], timetable.timetable[next_index].destination);
 
     let next_schedule_minutes = timetable.timetable[next_index].minute;
     let next_schedule_hours = timetable.timetable[next_index].hour;
@@ -412,17 +410,17 @@ module.exports = class Module extends ModuleController {
         console.log(schedule);
         let found = [];
         // display time
-        found.push(this.find(0, schedule.hour));
+        found.push(this.find(addrs[types.indexOf("hour")], schedule.hour));
         if (schedule.minute == 0) {
-          found.push(this.move(addr_minute, 30));
+          found.push(this.move(addrs[types.indexOf("minute")], 30));
         } else {
-          found.push(this.find(addr_minute, schedule.minute));
+          found.push(this.find(addrs[types.indexOf("minute")], schedule.minute));
         }
         // display delay
         // display delay in minute
         if (typeof(schedule.delay) == 'number') {
           schedule.delay = 'ca ' + schedule.delay + [(schedule.delay > 1) ? ' Minuten' : ' Minute'] + ' später';
-          found.push(this.find(addr_delay, schedule.delay));
+          found.push(this.find(addrs[types.indexOf("delay")], schedule.delay));
         // display cancellation
         } else if (false) {
           // todo
@@ -432,7 +430,7 @@ module.exports = class Module extends ModuleController {
           // todo
           found.push(this.find(2, 'Ausfall'));
         }else {
-          this.move(addr_delay, 0);
+          this.move(addrs[types.indexOf("minute")], 0);
           found.push(true);
         }
         // display train type (or connections.sections[0].journey.category)
@@ -456,13 +454,13 @@ module.exports = class Module extends ModuleController {
         if (connections.from.platform != null && connections.from.platform.indexOf('!') >= 0) {
           schedule.train = 'Gleisänderung';
         }
-        found.push(this.find(addr_train, schedule.train));
+        found.push(this.find(addrs[types.indexOf("train")], schedule.train));
         // display via
-        this.loadMessagesMapping(addr_via);
+        this.loadMessagesMapping(addrs[types.indexOf("via")]);
         schedule.via = this.messages.filter(e => schedule.vias.includes(e));
-        found.push(this.find(addr_via, schedule.via[0]));
+        found.push(this.find(addrs[types.indexOf("via")], schedule.via[0]));
         // display destination
-        found.push(this.find(addr_destination, schedule.destination));
+        found.push(this.find(addrs[types.indexOf("destination")], schedule.destination));
         // set all modules to 0 where nothing found
         for (let i = 0; i <= found.length; i++) {
           if (found[i] == false) {
