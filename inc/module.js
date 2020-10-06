@@ -387,10 +387,14 @@ module.exports = class Module extends ModuleController {
 
         // handle response
         // reset if nothing found
-        if (response.hasOwnProperty("errors") || response.connections.length == 0) {
+        if (response.hasOwnProperty("errors")) {
           addrs.forEach(e => this.move(e, 0));
           return;
-        }
+        } else if (response.connections.length == 0) {
+          addrs.forEach(e => this.move(e, 0));
+          vorpal.log(colors.red("No connection found"));
+          return;
+        };
         let connections = response.connections[0];
         let schedule = {};
 
