@@ -100,9 +100,20 @@ module.exports = class Module extends ModuleController {
 
   move(address, position) {
     this.random('stop');
-    // send module type for client compatibility
-    let type = types[addrs.indexOf(address)];
-    super.move(address, type, position);
+    let sql = `
+    SELECT moduleData.moduleAddress, moduleData.bladeId, moduleData.text, modules.type,
+    moduleData.textColor, moduleData.backgroundColor, txtColor.hexCode AS txtColor,
+    bgColor.hexCode AS bgColor
+    FROM moduleData
+    LEFT JOIN modules ON moduleData.moduleAddress = modules.address
+    LEFT JOIN colors AS txtColor ON moduleData.textColor = txtColor.description
+    LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
+    WHERE moduleAddress = ` + address + ' AND bladeId = ' + position;
+
+    db.get(sql, [], (err, row) => {
+      if (err) { throw err; }
+      super.move(row);
+    });
   }
 
   random(action, duration = 10000, variation = 0) {
