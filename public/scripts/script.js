@@ -17,7 +17,7 @@ $(function () {
         document.getElementById(id.slice(1)).style.color = '#' + data.txtColor;
         document.getElementById(id.slice(1)).style.background = '#' + data.bgColor;
       }
-    } else if (data.moduleAddress == 100) {
+    } else if (data.data.moduleAddress == 100) {
       // if all modules are targetted, e.g. step
       for (let address of addrs) {
         // create module id

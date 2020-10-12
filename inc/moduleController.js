@@ -2,12 +2,8 @@ const fs = require('fs');
 const UARTController = require('./uartController');
 
 module.exports = class ModuleController extends UARTController {
-  constructor(address, bladeCount) {
+  constructor() {
     super();
-
-    this.position = 0;
-    this.address = address;
-    this.bladeCount = bladeCount;
   }
 
   reset() {
@@ -48,7 +44,7 @@ module.exports = class ModuleController extends UARTController {
     let data = new Buffer.from([0xFF, 0xC6, this.address]);
     UARTController.send(data);
     // address 100 = send to all
-    global.server.io.emit('position', {address: 100});
+    global.server.io.emit('position', {data: {moduleAddress: 100}});
   }
 
   move(to) {

@@ -16,21 +16,21 @@ db.all(`SELECT DISTINCT address, type FROM modules WHERE is_used == true`, [], (
   rows.forEach((row) => {types.push(row.type); addrs.push(row.address);});
 });
 
-module.exports = class Module extends ModuleController {
-  constructor(address, type) {
-    super(address, 0);
-
-    this.type = type;
-    this.randomDuration = 10000
-    this.randomVariation = 0;
+module.exports = class ModuleElement {
+  constructor(config) {
+    this.position = 0;
+    this.address = config.address;
+    this.bladeCount = config.bladeCount;
+    this.type = config.type;
     this.switchMode('static');
-    this.loadMessagesMapping(address);
+    this.messages = [];
   }
+}
 
-  loadMessagesMapping(address) {
-    this.messages = require('../config/modules-mapping/' + address.toString().padStart(2, '0') + '.json');
-
-    this.bladeCount = this.messages.length;
+module.exports = class Module extends ModuleController {
+  constructor(config) {
+    super();
+    this.module = config;
   }
 
   switchMode(mode) {
@@ -73,20 +73,12 @@ module.exports = class Module extends ModuleController {
     return this.messages[this.position];
   }
 
-  list(address) {
-    this.loadMessagesMapping(address);
-    return this.messages;
-  }
-
   find(address, target) {
     var found = false;
     var messageIndex = 0;
 
     this.random('stop');
-
-    this.loadMessagesMapping(address);
-
-    this.messages.forEach(function(message, index) {
+    this.module.messages.forEach(function(message, index) {
       if (message == target && !found) {
         messageIndex = index;
         found = true;
@@ -357,11 +349,11 @@ module.exports = class Module extends ModuleController {
 
     // display timetable
     this.move(addrs[types.indexOf("minute")], this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
-    this.find(addrs[types.indexOf("hour")], timetable.timetable[next_index].hour);
-    this.find(addrs[types.indexOf("delay")], timetable.timetable[next_index].delay);
-    this.find(addrs[types.indexOf("train")], timetable.timetable[next_index].train);
-    this.find(addrs[types.indexOf("via")], timetable.timetable[next_index].via);
-    this.find(addrs[types.indexOf("destination")], timetable.timetable[next_index].destination);
+    this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], timetable.timetable[next_index].hour);
+    this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], timetable.timetable[next_index].delay);
+    this.module[types.indexOf("train")].find(addrs[types.indexOf("train")], timetable.timetable[next_index].train);
+    this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], timetable.timetable[next_index].via);
+    this.module[types.indexOf("destination")].find(addrs[types.indexOf("destination")], timetable.timetable[next_index].destination);
 
     let next_schedule_minutes = timetable.timetable[next_index].minute;
     let next_schedule_hours = timetable.timetable[next_index].hour;
@@ -421,17 +413,17 @@ module.exports = class Module extends ModuleController {
         console.log(schedule);
         let found = [];
         // display time
-        found.push(this.find(addrs[types.indexOf("hour")], schedule.hour));
+        found.push(this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], schedule.hour));
         if (schedule.minute == 0) {
           found.push(this.move(addrs[types.indexOf("minute")], 30));
         } else {
-          found.push(this.find(addrs[types.indexOf("minute")], schedule.minute));
+          found.push(this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], schedule.minute));
         }
         // display delay
         // display delay in minute
         if (typeof(schedule.delay) == 'number') {
           schedule.delay = 'ca ' + schedule.delay + [(schedule.delay > 1) ? ' Minuten' : ' Minute'] + ' später';
-          found.push(this.find(addrs[types.indexOf("delay")], schedule.delay));
+          found.push(this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], schedule.delay));
         // display cancellation
         } else if (false) {
           // todo
@@ -465,13 +457,12 @@ module.exports = class Module extends ModuleController {
         if (connections.from.platform != null && connections.from.platform.indexOf('!') >= 0) {
           schedule.train = 'Gleisänderung';
         }
-        found.push(this.find(addrs[types.indexOf("train")], schedule.train));
+        found.push(this.module[types.indexOf("train")].find(addrs[types.indexOf("train")], schedule.train));
         // display via
-        this.loadMessagesMapping(addrs[types.indexOf("via")]);
-        schedule.via = this.messages.filter(e => schedule.vias.includes(e));
-        found.push(this.find(addrs[types.indexOf("via")], schedule.via[0]));
+        schedule.via = this.module[types.indexOf("via")].module.messages.filter(e => schedule.vias.includes(e));
+        found.push(this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], schedule.via[0]));
         // display destination
-        found.push(this.find(addrs[types.indexOf("destination")], schedule.destination));
+        found.push(this.module[types.indexOf("destination")].find(addrs[types.indexOf("destination")], schedule.destination));
         // set all modules to 0 where nothing found
         for (let i = 0; i <= found.length; i++) {
           if (found[i] == false) {

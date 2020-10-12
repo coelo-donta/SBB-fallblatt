@@ -1,6 +1,10 @@
 const colors = require('colors');
 const Module = require('./module');
 const vorpal = require('vorpal')();
+const path = require('path');
+const ModuleElement = require('./module');
+const sqlite3 = require('sqlite3').verbose();
+let db = new sqlite3.Database(path.resolve(__dirname, '../config/modules.db'));
 
 module.exports = class Actions {
 
@@ -9,32 +13,88 @@ module.exports = class Actions {
   static init() {
     this.isReady = false;
 
-    //let isReadyPromise = [];
-    //for (var i = 0; i <= config.modules.length; i++) {
-    //let isReadyPromiseTemp = new Promise((resolve, reject) => {
-    //  this.moduleInstance = new Module(config.modules[i].module, config.modules[i].type);
     let isReadyPromise = new Promise((resolve, reject) => {
-      this.moduleInstance = new Module([], "");
 
-      Module.connectionPromise.then(() => {
-        this.initMessage();
+      let sql = 'SELECT * FROM modules WHERE is_used = 1';
+      let addrs = [];
+      let modules = [];
+      this.moduleInstance = new Module([],"");
 
-        clearInterval(this.initMessageInterval);
-        this.moduleInstance.reset();
-        this.isReady = true;
-        global.server.io.emit('status', Actions.status(global.server.isConnected));
-        vorpal.ui.redraw(colors.green('system is ready'));
-        resolve();
+      // query available modules from db
+      let queryDB = (sql) => {
+        return new Promise(function (resolve, reject) {
+          db.all(sql, function (err, rows) {
+            if (err) {
+              vorpal.log(colors.cyan(reject(err)));
+            } else {
+              resolve(rows);
+            }
+          });
+        });
+      }
 
+      // create new module class for available modules
+      let createModules = (modules, config) => {
+        return new Promise(function (resolve, reject) {
+          config.forEach((row) => {
+            modules.push(new ModuleElement(row));
+            addrs.push(row.address);
+          });
+          resolve(modules);
+        });
+      }
+
+      // query messages from db
+      let queryMessages = (address) => {
+        return new Promise(function (resolve, reject) {
+          let sql_msg = 'SELECT text FROM moduleData WHERE ModuleAddress = ' + address;
+          let messages = [];
+          queryDB(sql_msg).then((rows) => {
+            rows.forEach((row) => messages.push(row.text));
+            resolve(messages);
+          });
+        });
+      }
+
+      // query and messages to module class and connect
+      let addMessages = (modules, addrs) => {
+        const promises = [];
+        this.moduleInstance.module = modules;
+
+        for (let i = 0; i < addrs.length; i++) {
+          promises.push(queryMessages(addrs[i]))
+        }
+
+        Promise.all(promises).then((result) => {
+          for (let i = 0; i < addrs.length; i++) {
+            this.moduleInstance.module[i].module.messages = result[i];
+          }
+
+          Module.connectionPromise.then(() => {
+          this.initMessage();
+
+          clearInterval(this.initMessageInterval);
+          this.moduleInstance.reset();
+          this.isReady = true;
+          global.server.io.emit('status', Actions.status(global.server.isConnected));
+          vorpal.ui.redraw(colors.green('system is ready'));
+          resolve();
+          });
+        }
+        )
+      }
+
+      queryDB(sql)
+        .then((rows) => createModules(modules, rows))
+        .then((modules) => addMessages(modules, addrs))
+        .catch((err) => vorpal.log(colors.red(err)))
       });
-    });
-    //isReadyPromise.push(isReadyPromiseTemp);
-    //}
+
     return isReadyPromise;
   }
 
   static initMessage() {
-    let steps = Math.floor((this.moduleInstance.messages.length * 250 + 1000) / 1000);
+    let steps = 10;
 
     this.initStep = 0;
     this.initMessageInterval = setInterval(() => {
@@ -69,6 +129,14 @@ module.exports = class Actions {
 
       return status;
     }
+  }
+
+  static addressToIndex(address) {
+    let index = this.moduleInstance.module.map(e => e.module.address).indexOf(address)
+    if (index < 0) {
+      vorpal.log(colors.red('module ' + address + ' not found'));
+    }
+    return index;
   }
 
   static light(status) {
@@ -113,7 +181,10 @@ module.exports = class Actions {
   }
 
   static list(address, echo=true) {
-    let messages = this.moduleInstance.list(address);
+    let index = this.addressToIndex(address)
+    if (index == -1) { return; }
+
+    let messages = this.moduleInstance.module[index].module.messages;
 
     if (echo) {
       messages.forEach(function(message, index) {
@@ -127,7 +198,10 @@ module.exports = class Actions {
   static find(address, string) {
     if (!this.isReady) return;
 
-    let found = this.moduleInstance.find(address, string);
+    let index = this.addressToIndex(address)
+    if (index == -1) { return; }
+
+    let found = this.moduleInstance.module[index].find(address, string);
 
     if (found) {
       vorpal.log(colors.magenta('module "' + address + '" moved to "' + string + '"'));
@@ -140,6 +214,13 @@ module.exports = class Actions {
 
   static move(address, position) {
     if (!this.isReady) return;
+
+    let index = this.addressToIndex(address)
+    if (index == -1) { return; }
+    if (this.moduleInstance.module[index].module.bladeCount <= position) {
+      vorpal.log(colors.red('module ' + address + ' has only ' + this.moduleInstance.module[index].module.bladeCount + ' blades'));
+      return;
+    }
 
     this.moduleInstance.move(address, position);
 
