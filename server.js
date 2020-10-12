@@ -41,18 +41,18 @@ vorpal
   });
 
 vorpal
-  .command('message')
+  .command('message [address]')
   .description('get current message')
   .action(function(args, callback) {
-    Actions.message();
+    Actions.message(args.address);
     callback();
   })
 
 vorpal
-  .command('position')
+  .command('position [address]')
   .description('get module position')
   .action(function(args, callback) {
-    Actions.position();
+    Actions.position(args.address);
     callback();
   })
 

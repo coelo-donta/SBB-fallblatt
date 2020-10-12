@@ -161,21 +161,44 @@ module.exports = class Actions {
     vorpal.log(colors.magenta('execute command ' + command + ' ' + address + ' ' + value));
   }
 
-  static position() {
+  static position(address, echo = true) {
     if (!this.isReady) return;
 
-    vorpal.log(colors.magenta('module position is: ' + this.moduleInstance.position));
-
-    return this.moduleInstance.position;
+    if (typeof address == 'undefined') {
+      let positions = this.moduleInstance.module.map(e => e.module.position);
+      if (echo) {
+        vorpal.log(colors.magenta('module positions are: ' + positions));
+      }
+      return positions;
+    } else {
+      let index = this.moduleInstance.module.map(e => e.module.address).indexOf(address);
+      if (index < 0) {
+        vorpal.log(colors.red('module ' + address + ' not found'));
+      }
+      let positions = this.moduleInstance.module[index].module.position;
+      if (echo) {
+        vorpal.log(colors.magenta('position of module ' + address + ' is: ' + positions));
+      }
+      return positions;
+    }
   }
 
-  static message(echo = true) {
+  static message(address, echo = true) {
     if (!this.isReady) return;
 
-    let message = this.moduleInstance.message();
-
+    let position = this.position(address, false);
     if (echo) {
-      vorpal.log(colors.magenta('current message is: "' + message +'"'));
+      if (typeof address == 'undefined') {
+        let messages = [];
+        this.moduleInstance.module.forEach((el, ind) => messages.push(el.module.messages[position[ind]]));
+        vorpal.log(colors.magenta('module messages are: ' + messages ));
+      } else {
+        let index = this.moduleInstance.module.map(e => e.module.address).indexOf(address);
+        if (index < 0) {
+          vorpal.log(colors.red('module ' + address + ' not found'));
+        }
+        vorpal.log(colors.magenta('message of module ' + address + ' is: ' + this.moduleInstance.module[index].module.messages[position]));
+      }
     } else {
       return message;
     }
