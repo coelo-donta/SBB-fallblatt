@@ -91,7 +91,6 @@ module.exports = class Module extends ModuleController {
     LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
     WHERE moduleAddress = ` + address + ' AND bladeId = ' + position;
 
-    this.module.position = position;
     db.get(sql, [], (err, row) => {
       if (err) { throw err; }
       super.move(row);

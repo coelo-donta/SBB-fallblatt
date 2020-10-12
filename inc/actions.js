@@ -247,6 +247,7 @@ module.exports = class Actions {
     }
 
     this.moduleInstance.move(address, position);
+    this.moduleInstance.module[index].module.position = position;
 
     vorpal.log(colors.magenta('module "' + address +'" moved to "' + position + '"'));
   }
