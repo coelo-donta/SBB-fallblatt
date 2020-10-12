@@ -16,17 +16,6 @@ db.all(`SELECT DISTINCT address, type FROM modules WHERE is_used == true`, [], (
   rows.forEach((row) => {types.push(row.type); addrs.push(row.address);});
 });
 
-module.exports = class ModuleElement {
-  constructor(config) {
-    this.position = 0;
-    this.address = config.address;
-    this.bladeCount = config.bladeCount;
-    this.type = config.type;
-    this.switchMode('static');
-    this.messages = [];
-  }
-}
-
 module.exports = class Module extends ModuleController {
   constructor(config) {
     super();
@@ -102,6 +91,7 @@ module.exports = class Module extends ModuleController {
     LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
     WHERE moduleAddress = ` + address + ' AND bladeId = ' + position;
 
+    this.module.position = position;
     db.get(sql, [], (err, row) => {
       if (err) { throw err; }
       super.move(row);

@@ -37,7 +37,7 @@ module.exports = class Actions {
       let createModules = (modules, config) => {
         return new Promise(function (resolve, reject) {
           config.forEach((row) => {
-            modules.push(new ModuleElement(row));
+            modules.push(new Module(row));
             addrs.push(row.address);
           });
           resolve(modules);
@@ -68,8 +68,10 @@ module.exports = class Actions {
         Promise.all(promises).then((result) => {
           for (let i = 0; i < addrs.length; i++) {
             this.moduleInstance.module[i].module.messages = result[i];
+            this.moduleInstance.module[i].module.position = 0;
           }
 
+          this.moduleInstance.switchMode('static');
           Module.connectionPromise.then(() => {
           this.initMessage();
 
@@ -106,25 +108,24 @@ module.exports = class Actions {
 
   static status(serverStatus, echo = false) {
     if (!this.moduleInstance) return;
-
     if (echo) {
       vorpal.log(colors.magenta('status\t\t') + ((this.isReady) ? colors.green('ready') : colors.red('not ready')));
       vorpal.log(colors.magenta('serial\t\t') + ((Module.status()) ? colors.green('connected') : colors.red('not connected')));
       vorpal.log(colors.magenta('network\t\t') + ((server.isConnected) ? colors.green('connected') : colors.red('not connected')));
-      vorpal.log(colors.magenta('address\t\t') + this.moduleInstance.address);
-      vorpal.log(colors.magenta('type\t\t') + this.moduleInstance.type);
+      vorpal.log(colors.magenta('address\t\t') + this.moduleInstance.module.map(e => e.module.address));
+      vorpal.log(colors.magenta('type\t\t') + this.moduleInstance.module.map(e => e.module.type));
       vorpal.log(colors.magenta('mode\t\t') + this.moduleInstance.mode);
-      vorpal.log(colors.magenta('position\t') + this.moduleInstance.position);
+      vorpal.log(colors.magenta('position\t') + this.moduleInstance.module.map(e => e.module.position));
     } else {
       let status = {
         isReady: this.isReady,
         serial: Module.status(),
         network: server.isConnected,
         ipAddress: server.ipAddress,
-        type: this.moduleInstance.type,
+        type: this.moduleInstance.module.map(e => e.module.type),
         mode: this.moduleInstance.mode,
-        position: this.moduleInstance.position,
-        address: this.moduleInstance.address,
+        position: this.moduleInstance.module.map(e => e.module.position),
+        address: this.moduleInstance.module.map(e => e.module.address),
       };
 
       return status;
