@@ -210,8 +210,10 @@ module.exports = class Module extends ModuleController {
     var minutes = today.getMinutes();
     var min_position = this.minutesToPosition(minutes);
     // set position
-    super.move(addrs[types.indexOf("clock_hour")], [], hour);
-    super.move(addrs[types.indexOf("clock_minute")], [], min_position);
+    this.module[types.indexOf("clock_hour")].module.position = hour;
+    this.module[types.indexOf("clock_minute")].module.position = min_position;
+    this.move(addrs[types.indexOf("clock_hour")], hour);
+    this.move(addrs[types.indexOf("clock_minute")], min_position);
   }
 
   minutesToPosition(minutes) {
@@ -225,8 +227,10 @@ module.exports = class Module extends ModuleController {
 
   date() {
     let today = new Date();
-    super.move(addrs[types.indexOf("clock_hour")], [], today.getMonth() + 1);
-    super.move(addrs[types.indexOf("clock_minute")], [], this.minutesToPosition(today.getDate()));
+    this.module[types.indexOf("clock_hour")].module.position = today.getMonth() + 1;
+    this.module[types.indexOf("clock_minute")].module.position = this.minutesToPosition(today.getDate());
+    this.move(addrs[types.indexOf("clock_hour")], today.getMonth() + 1);
+    this.move(addrs[types.indexOf("clock_minute")], this.minutesToPosition(today.getDate()));
   }
 
   timetable(action) {
