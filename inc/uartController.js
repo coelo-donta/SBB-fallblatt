@@ -4,25 +4,22 @@ const fs = require('fs');
 const SerialPort = require('serialport');
 
 module.exports = class UARTController {
-  constructor() {
-    UARTController.connect();
+  constructor(serial_address) {
+    UARTController.connect(serial_address);
   }
 
   static status() {
     return this.isConnected;
   }
 
-  static connect() {
+  static connect(serial_address) {
     if (this.isConnecting) return;
-
     this.commandList = [];
     this.isConnecting = true;
 
-    let config = require('../config/config.json');
-
     this.connectionPromise = new Promise((resolve, reject) => {
       // get serial of first module element (all modules have the same)
-      this.port = new SerialPort(config.modules[0].serial, {
+      this.port = new SerialPort(serial_address, {
         baudRate: 19200
       }, (err) => {
         if (err) {

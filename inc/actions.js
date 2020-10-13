@@ -18,7 +18,6 @@ module.exports = class Actions {
       let sql = 'SELECT * FROM modules WHERE is_used = 1';
       let addrs = [];
       let modules = [];
-      this.moduleInstance = new Module([],"");
 
       // query available modules from db
       let queryDB = (sql) => {
@@ -59,6 +58,7 @@ module.exports = class Actions {
       // query and messages to module class and connect
       let addMessages = (modules, addrs) => {
         const promises = [];
+        this.moduleInstance = new Module([]);
         this.moduleInstance.module = modules;
 
         for (let i = 0; i < addrs.length; i++) {

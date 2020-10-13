@@ -2,8 +2,8 @@ const fs = require('fs');
 const UARTController = require('./uartController');
 
 module.exports = class ModuleController extends UARTController {
-  constructor() {
-    super();
+  constructor(serial_address) {
+    super(serial_address);
   }
 
   reset() {

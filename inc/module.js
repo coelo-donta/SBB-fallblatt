@@ -18,7 +18,7 @@ db.all(`SELECT DISTINCT address, type FROM modules WHERE is_used == true`, [], (
 
 module.exports = class Module extends ModuleController {
   constructor(config) {
-    super();
+    super(config.serial_address);
     this.module = config;
   }
 
