@@ -14,9 +14,22 @@ let db = new sqlite3.Database(path.resolve(__dirname, '../config/modules.db'));
 // find all types
 let types = [];
 let addrs = [];
-db.all(`SELECT DISTINCT address, type FROM modules WHERE is_used == true AND type IN ("hour", "minute", "delay", "train", "via", "destination")`, [], (err, rows) => {
+db.all(`
+SELECT DISTINCT address, type FROM modules WHERE is_used == true AND type
+IN ("hour", "minute", "delay", "train", "via", "destination")
+ORDER BY CASE type
+  WHEN "hour" THEN 0
+  WHEN "minute" THEN 1
+  WHEN "delay" THEN 2
+  WHEN "train" THEN 3
+  WHEN "via" THEN 4
+  WHEN "destination" THEN 5
+END`, [], (err, rows) => {
   if (err) { throw err; }
   rows.forEach((row) => {types.push(row.type); addrs.push(row.address);});
+  if (addrs.length != 6) {
+    vorpal.log(colors.yellow("Warning: The client is only displayed correctly with 6 modules."))
+  }
 });
 
 module.exports = class Server {
