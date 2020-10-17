@@ -40,7 +40,7 @@ Instead of using the serial ports of the Raspi, you can also use a USB-RS485 con
 There is a 12 V power supply for the ventilation. The modules get 35 V over a transformer. A 230 V power socket next to the fuses can be used to power the Raspi. 
 
 #### Light
-The lights are directly connected to the main 230 V supply. I bridged the supply of the lights over a relay (normally open) that is controlled by the GPIO 17 (pin 11).
+The lights are directly connected to the main 230 V supply. I bridged the supply of the lights over a relay (normally open) that is controlled by the GPIO 17 (pin 11, pins 1 and 9 for power).
 
 #### Ventilation
 A heat sensor switch is located on both sides in the center top. If the temperature inside the display gets too high, the four ventilators are turned on. They consume around 135 W.
@@ -50,7 +50,7 @@ A resistance heating surrounds the glass on both sides. It consumes around 250 W
 
 ## Software
 
-The software from [@harkle](https://github.com/harkle/fallblatt-module) is a Node JS application that allow to control an split-flap display consisting of several modules via serial port. It offers a webinterface, and two API (Websocket and REST). I extended the existing code to communicate to all modules and added new modes to play with it.
+The software from [@harkle](https://github.com/harkle/fallblatt-module) is a Node JS application that allows to control a split-flap display consisting of several modules via serial port. It offers a webinterface, and two API (Websocket and REST). I extended the existing code to communicate to all modules and added new modes to play with it.
 
 ## Installation
 The easiest way to deal with node and npm is via nvm.
@@ -68,8 +68,20 @@ npm install
 
 This should install node version `10.20.1` and npm version `6.14.4`.
 
-Set the texts of your flaps into the files `config/<module number>.json`. Change the module numbers and types in the file `config/config.json` to reflect your setup.
-> The module number is usually written with pencil on top of the module.
+The configuration of the modules is read from the database in `config/modules.db`. Change the configuration of your modules in the database to reflect your setup. There are three tables:
+-  `modules` with columns `address, type, bladeCount, moduleWidth, moduleColor, textLanguage, is_used, serial_address`
+
+    e.g. `3|train|62|3|blue|de|1|/dev/ttyUSB0`
+- `moduleData` with columns `moduleAddress, bladeId, text, textColor, backgroundColor`
+
+    e.g. `3|4|ICE|white|red`
+- `colors` with columns `colorId, description, hexCode, redDec, greenDec, blueDec`
+
+    e.g. `2|blue|2d327d|45|50|125`
+
+> The module address is usually written with pencil on top of the module.
+> Set `is_used` to `1` if you want to control it.
+> Possible types are `hour`, `minute`, `delay`, `train`, `via`, `destination`, `clock_hour`, `clock_minute`, `alphanumeric`.
 
 Start the application by running
 
@@ -91,8 +103,8 @@ Commands:
     light <status>                          turn the light on/off
     reset                                   reset module position
     manual <command> <address> [value]      send manual commands
-    message                                 get current message
-    position                                get module position
+    message [address]                       get current message
+    position [address]                      get module position
     list <address>                          get module messages
     find <address> <string>                 move the module <address> to searched <string>
     step                                    step the module 1 step ahead
