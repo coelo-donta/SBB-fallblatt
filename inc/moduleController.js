@@ -7,7 +7,7 @@ module.exports = class ModuleController extends UARTController {
   }
 
   reset() {
-    this.position = 0;
+    this.module.forEach(e => e.module.position = 0)
 
     let data = new Buffer.from([0xFF, 0xC5, this.address]);
     UARTController.send(data);
@@ -48,7 +48,11 @@ module.exports = class ModuleController extends UARTController {
   }
 
   move(to) {
-    this.position = to.bladeId;
+    if (typeof this.module.length == 'undefined') {
+      this.module.position = to.bladeId;
+    } else {
+      this.module[to.index].module.position = to.bladeId;
+    }
 
     let data = new Buffer.from([0xFF, 0xC0, to.moduleAddress, to.bladeId]);
     UARTController.send(data);

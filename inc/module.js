@@ -91,8 +91,10 @@ module.exports = class Module extends ModuleController {
     LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
     WHERE moduleAddress = ` + address + ' AND bladeId = ' + position;
 
+    let index = addrs.indexOf(address)
     db.get(sql, [], (err, row) => {
       if (err) { throw err; }
+      row.index = index;
       super.move(row);
     });
   }
@@ -212,8 +214,8 @@ module.exports = class Module extends ModuleController {
     // set position
     this.module[types.indexOf("clock_hour")].module.position = hour;
     this.module[types.indexOf("clock_minute")].module.position = min_position;
-    this.move(addrs[types.indexOf("clock_hour")], hour);
-    this.move(addrs[types.indexOf("clock_minute")], min_position);
+    this.module[types.indexOf("clock_hour")].move(addrs[types.indexOf("clock_hour")], hour);
+    this.module[types.indexOf("clock_minute")].move(addrs[types.indexOf("clock_minute")], min_position);
   }
 
   minutesToPosition(minutes) {
@@ -229,8 +231,8 @@ module.exports = class Module extends ModuleController {
     let today = new Date();
     this.module[types.indexOf("clock_hour")].module.position = today.getMonth() + 1;
     this.module[types.indexOf("clock_minute")].module.position = this.minutesToPosition(today.getDate());
-    this.move(addrs[types.indexOf("clock_hour")], today.getMonth() + 1);
-    this.move(addrs[types.indexOf("clock_minute")], this.minutesToPosition(today.getDate()));
+    this.module[types.indexOf("clock_hour")].move(addrs[types.indexOf("clock_hour")], today.getMonth() + 1);
+    this.module[types.indexOf("clock_minute")].move(addrs[types.indexOf("clock_minute")], this.minutesToPosition(today.getDate()));
   }
 
   timetable(action) {
@@ -341,7 +343,7 @@ module.exports = class Module extends ModuleController {
     console.log(timetable.timetable[next_index]);
 
     // display timetable
-    this.move(addrs[types.indexOf("minute")], this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
+    this.module[types.indexOf("hour")].move(addrs[types.indexOf("minute")], this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
     this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], timetable.timetable[next_index].hour);
     this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], timetable.timetable[next_index].delay);
     this.module[types.indexOf("train")].find(addrs[types.indexOf("train")], timetable.timetable[next_index].train);
@@ -382,10 +384,15 @@ module.exports = class Module extends ModuleController {
         // handle response
         // reset if nothing found
         if (response.hasOwnProperty("errors")) {
+<<<<<<< Updated upstream
           addrs.forEach(e => this.move(e, 0));
+=======
+          addrs.forEach(e => this.module[addrs.indexOf(e)].move(e, 0));
+          vorpal.log(colors.red(response.errors[0].message));
+>>>>>>> Stashed changes
           return;
         } else if (response.connections.length == 0) {
-          addrs.forEach(e => this.move(e, 0));
+          addrs.forEach(e => this.module[addrs.indexOf(e)].move(e, 0));
           vorpal.log(colors.red("No connection found"));
           return;
         };
@@ -408,7 +415,7 @@ module.exports = class Module extends ModuleController {
         // display time
         found.push(this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], schedule.hour));
         if (schedule.minute == 0) {
-          found.push(this.move(addrs[types.indexOf("minute")], 30));
+          found.push(this.module[types.indexOf("minute")].move(addrs[types.indexOf("minute")], 30));
         } else {
           found.push(this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], schedule.minute));
         }
@@ -426,7 +433,7 @@ module.exports = class Module extends ModuleController {
           // todo
           found.push(this.find(2, 'Ausfall'));
         }else {
-          this.move(addrs[types.indexOf("minute")], 0);
+          this.module[types.indexOf("minute")].move(addrs[types.indexOf("minute")], 0);
           found.push(true);
         }
         // display train type (or connections.sections[0].journey.category)
@@ -459,7 +466,7 @@ module.exports = class Module extends ModuleController {
         // set all modules to 0 where nothing found
         for (let i = 0; i <= found.length; i++) {
           if (found[i] == false) {
-            this.move(addrs[i], 0)
+            this.module[addrs.indexOf(i)].move(addrs[i], 0)
           };
         };
 
@@ -472,4 +479,77 @@ module.exports = class Module extends ModuleController {
     return ;
   }
 
+<<<<<<< Updated upstream
+=======
+  weather(location) {
+
+    let url = 'https://api.openweathermap.org/data/2.5/weather?q=' + location + '&appid=' +
+      api_secrets.api_keys.openweathermap;
+
+    // get schedule
+    let req = https.get(url, res => {
+      res.setEncoding('utf8');
+      let response = '';
+      res.on('data', data => {
+        response += data;
+      });
+      res.on('end', () => {
+        response = JSON.parse(response);
+
+        // handle response
+        // reset if nothing found
+        if (response.cod != 200) {
+          addrs.forEach(e => this.move(e, 0));
+          vorpal.log(colors.red(response.message));
+          return;
+        }
+
+        let weather = {};
+        weather.temperature = response.main.temp - 273.15;
+        weather.type = response.weather[0].id;
+
+        if (weather.temperature >= 0) {
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "+");
+        } else {
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "-");
+        }
+
+        this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], Math.round(Math.abs(weather.temperature)));
+        this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], "&#176")
+
+        let weather_symbol = "";
+        if (weather.type < 300) { // thunderstorm
+          weather_symbol = "&#127785";
+        } else if (weather.type >= 500 || weather.type < 505) { // rain
+          weather_symbol = "&#127782";
+        } else if (weather.type < 600) { // drizzle & shower
+          weather_symbol = "&#127783";
+        } else if (weather.type < 700) { // snow
+          weather_symbol = "&#10052";
+        } else if (weather.type < 800) { // athmosphere
+          weather_symbol = "&#127787";
+        } else if (weather.type == 800) { // clear
+          weather_symbol = "&#9728";
+        } else if (weather.type == 801) { // few clouds
+          weather_symbol = "&#127780";
+        } else if (weather.type == 802) { // scattered clouds
+          weather_symbol = "&#127781";
+        } else if (weather.type > 802) { // clouds
+          weather_symbol = "&#9729";
+        }
+        this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], weather_symbol);
+
+        // set all modules to 0 where nothing found
+        this.module[types.indexOf("train")].move(addrs[types.indexOf("train")], 0);
+        this.module[types.indexOf("destination")].move(addrs[types.indexOf("destination")], 0);
+      });
+    });
+    req.on('error', (err) => {
+      vorpal.log(colors.red('schedule request connection error ' + err));
+    });
+    req.end();
+    return ;
+  }
+
+>>>>>>> Stashed changes
 };
