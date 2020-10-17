@@ -515,7 +515,7 @@ module.exports = class Module extends ModuleController {
         let weather_symbol = "";
         if (weather.type < 300) { // thunderstorm
           weather_symbol = "&#127785";
-        } else if (weather.type >= 500 || weather.type < 505) { // rain
+        } else if (weather.type < 505 && weather.type >= 500) { // rain
           weather_symbol = "&#127782";
         } else if (weather.type < 600) { // drizzle & shower
           weather_symbol = "&#127783";
