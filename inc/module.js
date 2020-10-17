@@ -502,36 +502,39 @@ module.exports = class Module extends ModuleController {
         weather.type = response.weather[0].id;
 
         if (weather.temperature >= 0) {
-          this.find(addr_hour, "+");
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "+");
         } else {
-          this.find(addr_hour, "-");
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "-");
         }
 
-        this.find(addr_minute, Math.round(Math.abs(weather.temperature)));
-        this.find(addr_delay, "°")
+        this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], Math.round(Math.abs(weather.temperature)));
+        this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], "&#176")
 
+        let weather_symbol = "";
         if (weather.type < 300) { // thunderstorm
-          this.find(addr_via, "&#127787");
-        } else if (weather.type < 600) { // drizzle & rain
-          this.find(addr_via, "&#127783");
+          weather_symbol = "&#127785";
+        } else if (weather.type >= 500 || weather.type < 505) { // rain
+          weather_symbol = "&#127782";
+        } else if (weather.type < 600) { // drizzle & shower
+          weather_symbol = "&#127783";
         } else if (weather.type < 700) { // snow
-          this.find(addr_via, "&#10052");
-        } else if (weather.type < 700) { // athmosphere
-          this.find(addr_via, "&#127787");
+          weather_symbol = "&#10052";
+        } else if (weather.type < 800) { // athmosphere
+          weather_symbol = "&#127787";
         } else if (weather.type == 800) { // clear
-          this.find(addr_via, "&#9728");
+          weather_symbol = "&#9728";
         } else if (weather.type == 801) { // few clouds
-          this.find(addr_via, "&#127780");
+          weather_symbol = "&#127780";
         } else if (weather.type == 802) { // scattered clouds
-          this.find(addr_via, "&#127781");
+          weather_symbol = "&#127781";
         } else if (weather.type > 802) { // clouds
-          this.find(addr_via, "&#9729");
+          weather_symbol = "&#9729";
         }
+        this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], weather_symbol);
 
         // set all modules to 0 where nothing found
-        this.move(addr_train, 0);
-        this.move(addr_destination, 0);
-
+        this.move(addrs[types.indexOf("train")], 0);
+        this.move(addrs[types.indexOf("destination")], 0);
       });
     });
     req.on('error', (err) => {
