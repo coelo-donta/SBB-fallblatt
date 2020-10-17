@@ -162,7 +162,7 @@ $(function () {
     });
 
     // autocomplete for schedule
-    $('body').on('keydown', function () {
+    $('body').on('keydown', '#inputFrom, #inputTo', function () {
       var field = document.activeElement.value;
       let url = 'https://transport.opendata.ch' + '/v1/locations?query=' + field + '&type=station';
       httpGetAsync (url, autocompleter)
