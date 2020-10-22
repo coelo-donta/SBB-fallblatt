@@ -542,6 +542,8 @@ module.exports = class Module extends ModuleController {
         // set all modules to 0 where nothing found
         this.module[types.indexOf("train")].move(addrs[types.indexOf("train")], 0);
         this.module[types.indexOf("destination")].move(addrs[types.indexOf("destination")], 0);
+
+        vorpal.log(colors.magenta('displaying live weather of ' + response.name + ", " + response.sys.country));
       });
     });
     req.on('error', (err) => {
