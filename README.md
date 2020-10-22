@@ -115,6 +115,7 @@ Commands:
     date                                    display the date
     timetable <action>                      get and display timetable
     schedule <from> <to>                    get live schedule
+    weather <location>                      get live weather data
 ```
 
 ```
@@ -128,13 +129,23 @@ Examples:
 > time start				% start displaying the time
 > timetable stop			% stop displaying the timetable
 > schedule romanshorn zürich		% show next connection from romanshorn to zurich
+> weather paris			        % show current weather in paris
 ```
 
 You can find the documentation how to send commands [here](doc/protocol_new_modules.md).
 
 The `time` and `date` command send to the additional modules that I have ontop of the display.
-The command `timetable` displays and updates the predefined timetable from the file `config/timetable.json`. The command `schedule` makes an API request to [https://transport.opendata.ch/](https://transport.opendata.ch/) and displays the time, delay, train types, via stations, and destination using the available flaps.
+The command `timetable` displays and updates the predefined timetable from the file `config/timetable.json`. The command `schedule` makes an API request to [https://transport.opendata.ch/](https://transport.opendata.ch/) and displays the time, delay, train types, via stations, and destination using the available flaps. The `weather` command requires an API key set in `config/api_secrets.json` as:
 
+```
+{
+    "api_keys" :
+        {
+            "openweathermap": "<your api key>"
+        }
+}
+```
+You get an API key by creating a free account on [openweathermap.org](openweathermap.org). The additional symbols required to display the weather can be added on the flaps by hand.
 
 ## Debugging
 
