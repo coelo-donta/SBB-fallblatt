@@ -32,10 +32,12 @@ $(function () {
       }
     } else {
       // if one module is targeted, eg. static
-      var id = "#module_" + data.data.type;
-      $(id).val(data.data.bladeId);
-      document.getElementById(id.slice(1)).style.color = '#' + data.data.txtColor;
-      document.getElementById(id.slice(1)).style.background = '#' + data.data.bgColor;
+      if (addrs.indexOf(data.data.type) != -1) {
+        let id = "#module_" + data.data.type;
+        $(id).val(data.data.bladeId);
+        document.getElementById(id.slice(1)).style.color = '#' + data.data.txtColor;
+        document.getElementById(id.slice(1)).style.background = '#' + data.data.bgColor;
+      }
     }
 
   });
@@ -52,6 +54,11 @@ $(function () {
       $('#lightswitch')[0].innerText = "\uD83C\uDF1A";
       $('#lightswitch').val(0);
     }
+  });
+
+  socket.on('weather-city', function(data) {
+    console.log(data);
+    $('#weatherLocation').val(data.city);
   });
 
   socket.on('status', function(data) {

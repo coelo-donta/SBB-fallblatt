@@ -543,7 +543,9 @@ module.exports = class Module extends ModuleController {
         this.module[types.indexOf("train")].move(addrs[types.indexOf("train")], 0);
         this.module[types.indexOf("destination")].move(addrs[types.indexOf("destination")], 0);
 
-        vorpal.log(colors.magenta('displaying live weather of ' + response.name + ", " + response.sys.country));
+        let city = response.name + ", " + response.sys.country;
+        vorpal.log(colors.magenta('displaying live weather of ' + city));
+        global.server.io.emit('weather-city', {city: city});
       });
     });
     req.on('error', (err) => {
