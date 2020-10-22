@@ -7,6 +7,7 @@ const https = require('https');
 const Gpio = require('onoff').Gpio;
 const sqlite3 = require('sqlite3').verbose();
 let db = new sqlite3.Database(path.resolve(__dirname, '../config/modules.db'));
+let api_secrets = require('../config/api_secrets.json');
 
 // find all types
 let types = [];
@@ -471,6 +472,76 @@ module.exports = class Module extends ModuleController {
           };
         };
 
+      });
+    });
+    req.on('error', (err) => {
+      vorpal.log(colors.red('schedule request connection error ' + err));
+    });
+    req.end();
+    return ;
+  }
+
+  weather(location) {
+
+    let url = 'https://api.openweathermap.org/data/2.5/weather?q=' + location + '&appid=' +
+      api_secrets.api_keys.openweathermap;
+
+    // get schedule
+    let req = https.get(url, res => {
+      res.setEncoding('utf8');
+      let response = '';
+      res.on('data', data => {
+        response += data;
+      });
+      res.on('end', () => {
+        response = JSON.parse(response);
+
+        // handle response
+        // reset if nothing found
+        if (response.cod != 200) {
+          addrs.forEach(e => this.move(e, 0));
+          vorpal.log(colors.red(response.message));
+          return;
+        }
+
+        let weather = {};
+        weather.temperature = response.main.temp - 273.15;
+        weather.type = response.weather[0].id;
+
+        if (weather.temperature >= 0) {
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "+");
+        } else {
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "-");
+        }
+
+        this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], Math.round(Math.abs(weather.temperature)));
+        this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], "&#176")
+
+        let weather_symbol = "";
+        if (weather.type < 300) { // thunderstorm
+          weather_symbol = "&#127785";
+        } else if (weather.type < 505 && weather.type >= 500) { // rain
+          weather_symbol = "&#127782";
+        } else if (weather.type < 600) { // drizzle & shower
+          weather_symbol = "&#127783";
+        } else if (weather.type < 700) { // snow
+          weather_symbol = "&#10052";
+        } else if (weather.type < 800) { // athmosphere
+          weather_symbol = "&#127787";
+        } else if (weather.type == 800) { // clear
+          weather_symbol = "&#9728";
+        } else if (weather.type == 801) { // few clouds
+          weather_symbol = "&#127780";
+        } else if (weather.type == 802) { // scattered clouds
+          weather_symbol = "&#127781";
+        } else if (weather.type > 802) { // clouds
+          weather_symbol = "&#9729";
+        }
+        this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], weather_symbol);
+
+        // set all modules to 0 where nothing found
+        this.module[types.indexOf("train")].move(addrs[types.indexOf("train")], 0);
+        this.module[types.indexOf("destination")].move(addrs[types.indexOf("destination")], 0);
       });
     });
     req.on('error', (err) => {

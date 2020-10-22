@@ -307,4 +307,11 @@ module.exports = class Actions {
     vorpal.log(colors.magenta('displaying live schedule'));
   }
 
+  static weather(location) {
+    if (!this.isReady) return;
+
+    this.moduleInstance.weather(location);
+
+    vorpal.log(colors.magenta('displaying live weather of ' + location));
+  }
 }

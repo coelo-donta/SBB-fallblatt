@@ -60,9 +60,12 @@ $(function () {
       //$('#module').val(data.position);
 
       $('#scheduleForm').hide()
+      $('#weatherForm').hide()
 
       if (data.mode == 'schedule') {
         $('#scheduleForm').show();
+      } else if (data.mode == 'weather') {
+        $('#weatherForm').show();
       }
 
     } else if ($('body').hasClass('information')) {
@@ -115,6 +118,7 @@ $(function () {
       var targetFields;
 
       $('#scheduleForm').hide()
+      $('#weatherForm').hide()
 
       if (mode == 'time') {
         targetFields = $('');
@@ -124,6 +128,8 @@ $(function () {
         socket.emit('timetable', {action: action});
       } else if (mode == 'schedule') {
         targetFields = $('#scheduleForm');
+      } else if (mode == 'weather') {
+        targetFields = $('#weatherForm');
       } else if (mode == 'reset') {
         targetFields = $('');
         socket.emit('reset', {});
@@ -151,8 +157,12 @@ $(function () {
       toField.value = temp;
     });
 
+    $('body').on('click', '#weatherButton', function () {
+      socket.emit('weather', {location: $('#weatherLocation').val()});
+    });
+
     // autocomplete for schedule
-    $('body').on('keydown', function () {
+    $('body').on('keydown', '#inputFrom, #inputTo', function () {
       var field = document.activeElement.value;
       let url = 'https://transport.opendata.ch' + '/v1/locations?query=' + field + '&type=station';
       httpGetAsync (url, autocompleter)

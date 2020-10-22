@@ -121,6 +121,12 @@ module.exports = class Server {
 
         client.emit('schedule', {success: true, status: Actions.status()});
       });
+
+      client.on('weather', (data) => {
+        Actions.weather(data.location);
+
+        client.emit('weather', {success: true, status: Actions.status()});
+      });
     });
 
     this.app.set('views', __dirname + '/../views');
@@ -244,6 +250,15 @@ module.exports = class Server {
       let request = req.url.split('/');
 
       Actions.schedule(request[2], request[3]);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({success: true, status: Actions.status()}));
+    });
+
+    this.app.post('/weather/*', function (req, res) {
+      let request = req.url.split('/');
+
+      Actions.weather(request[2]);
 
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({success: true, status: Actions.status()}));

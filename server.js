@@ -137,4 +137,12 @@ vorpal
     callback();
   });
 
+vorpal
+  .command('weather <location>')
+  .description('get live weather data')
+  .action(function(args, callback) {
+    Actions.weather(args.location);
+    callback();
+  });
+
 vorpal.delimiter('fallblatt >');

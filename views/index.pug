@@ -10,6 +10,7 @@ block content
         option(value="time") Time
         option(value="timetable") Timetable
         option(value="schedule") Schedule
+        option(value="weather") Weather
         option(value="reset") Reset
   .row#scheduleForm
     .col-md-12
@@ -22,6 +23,13 @@ block content
           label(for='to')
           input#inputTo.form-control(type='text', placeholder='To' name='to')
       button#scheduleButton.btn(type='submit') Search Connection
+  .row#weatherForm
+    .col-md-12
+      div.form-inline
+        div.form-group.form-field
+          label(for='location')
+          input#weatherLocation.form-control.form-input(type='text', placeholder='Location' name='location')
+      button#weatherButton.btn(type='submit') Lookup Weather
   .row
     .col-md-12
       h4 Message
