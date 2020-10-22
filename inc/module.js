@@ -25,6 +25,10 @@ module.exports = class Module extends ModuleController {
   switchMode(mode) {
     this.mode = mode;
 
+    if (mode != "timetable") {
+      clearTimeout(this.timetableTimeout);
+      clearTimeout(this.timetableTimeoutFirst);
+    }
     global.server.io.emit('mode', {mode: this.mode});
   }
 
@@ -245,7 +249,7 @@ module.exports = class Module extends ModuleController {
         // update on second 0
         var seconds = new Date().getSeconds();
         var diff = 60-seconds;
-        setTimeout(() => {
+        this.timetableTimeoutFirst = setTimeout(() => {
           this.displayTimetable();
         }, diff*1000);
         this.switchMode('timetable');
@@ -367,6 +371,7 @@ module.exports = class Module extends ModuleController {
   }
 
   schedule(from, to) {
+    this.switchMode('schedule');
 
     let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' +
       to + '&datetime=' + '&transportations=train&limit=1';
@@ -429,7 +434,7 @@ module.exports = class Module extends ModuleController {
           // todo
           found.push(this.find(2, 'Ausfall'));
         }else {
-          this.module[types.indexOf("minute")].move(addrs[types.indexOf("minute")], 0);
+          this.module[types.indexOf("delay")].move(addrs[types.indexOf("delay")], 0);
           found.push(true);
         }
         // display train type (or connections.sections[0].journey.category)
