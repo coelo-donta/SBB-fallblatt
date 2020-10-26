@@ -141,8 +141,6 @@ $(function () {
         targetFields = $('');
         socket.emit('reset', {});
       } else {
-        socket.emit('turn', {action: 'stop'});
-        socket.emit('random', {action: 'stop'});
         socket.emit('time', {action: 'stop'});
         socket.emit('timetable', {action: 'stop'});
       }

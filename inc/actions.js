@@ -259,22 +259,6 @@ module.exports = class Actions {
     vorpal.log(colors.magenta('module moved 1 step ahead'));
   }
 
-  static random(action, duration = 10, variation = 0) {
-    if (!this.isReady) return;
-
-    this.moduleInstance.random(action, duration * 1000, variation * 1000);
-
-    vorpal.log(colors.magenta('random mode set to "' + action + '"'));
-  }
-
-  static turn(action, duration = 5, variation = 0) {
-    if (!this.isReady) return;
-
-    this.moduleInstance.turn(action, duration * 1000, variation * 1000);
-
-    vorpal.log(colors.magenta('turn mode set to "' + action + '"'));
-  }
-
   static time(action) {
     if (!this.isReady) return;
 
