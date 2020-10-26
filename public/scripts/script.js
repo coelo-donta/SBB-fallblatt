@@ -87,6 +87,14 @@ $(function () {
     $('#modules').append(input);
   });
 
+  socket.on('load_positions', function(data) {
+    for (let i = 0; i < data.type.length; i++) {
+      if (addrs.indexOf(data.type[i]) != -1) {
+        socket.emit('move', {address: data.type[i], destination: data.position[i], echo: false});
+      }
+    }
+  });
+
   if ($('body').hasClass('index')) {
     socket.emit('status');
     $('#modules').append('<div class="track-number"><span class="track-title">Gleis</span>1</div>');

@@ -54,6 +54,7 @@ module.exports = class Server {
         for (var i = 0; i < addrs.length; i++) {
           client.emit('list', {address: addrs[i], type: types[i], data: Actions.list(addrs[i], false)});
         }
+        client.emit('load_positions', Actions.status(this));
       });
 
       client.on('position', (data) => {
@@ -75,7 +76,7 @@ module.exports = class Server {
       });
 
       client.on('move', (data) => {
-        Actions.move(addrs[types.indexOf(data.address)], data.destination);
+        Actions.move(addrs[types.indexOf(data.address)], data.destination, data.echo);
 
         client.emit('move', {success: true, status: Actions.status()});
       });

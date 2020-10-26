@@ -236,7 +236,7 @@ module.exports = class Actions {
     return found;
   }
 
-  static move(address, position) {
+  static move(address, position, echo = true) {
     if (!this.isReady) return;
 
     let index = this.addressToIndex(address)
@@ -248,7 +248,9 @@ module.exports = class Actions {
 
     this.moduleInstance.move(address, position);
 
-    vorpal.log(colors.magenta('module "' + address +'" moved to "' + position + '"'));
+    if (echo == true) {
+      vorpal.log(colors.magenta('module "' + address +'" moved to "' + position + '"'));
+    }
   }
 
   static step() {
