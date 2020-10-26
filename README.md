@@ -109,8 +109,6 @@ Commands:
     find <address> <string>                 move the module <address> to searched <string>
     step                                    step the module 1 step ahead
     move <address> <position>               move the module <address> to <position>
-    turn <action> [duration] [variation]    turn mode duration variation, use with start|stop, time in seconds
-    random <action> [duration] [variation]  random mode duration variation, use with start|stop, time in seconds
     time <action>                           display the time
     date                                    display the date
     timetable <action>                      get and display timetable

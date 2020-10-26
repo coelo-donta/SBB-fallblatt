@@ -92,18 +92,6 @@ module.exports = class Server {
         client.emit('find', {success: found, status: Actions.status()});
       });
 
-      client.on('random', (data) => {
-        Actions.random(data.action, data.duration, data.variation);
-
-        client.emit('random', {success: true, status: Actions.status()});
-      });
-
-      client.on('turn', (data) => {
-        Actions.turn(data.action, data.duration, data.variation);
-
-        client.emit('turn', {success: true, status: Actions.status()});
-      });
-
       client.on('time', (data) => {
         Actions.time(data.action);
 
@@ -208,24 +196,6 @@ module.exports = class Server {
 
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({success: found, status: Actions.status()}));
-    });
-
-    this.app.post('/random/*', function (req, res) {
-      let request = req.url.split('/');
-
-      Actions.random(request[2], request[3], request[4]);
-
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify({success: true, status: Actions.status()}));
-    });
-
-    this.app.post('/turn/*', function (req, res) {
-      let request = req.url.split('/');
-
-      Actions.turn(request[2], request[3], request[4]);
-
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify({success: true, status: Actions.status()}));
     });
 
     this.app.post('/time/*', function (req, res) {

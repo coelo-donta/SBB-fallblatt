@@ -180,9 +180,3 @@ input {
   background-color: DodgerBlue !important;
   color: #fff;
 }
-#turnVariationLine,
-#turnDurationLine,
-#randomVariationLine,
-#randomDurationLine {
-  display: none;
-}
