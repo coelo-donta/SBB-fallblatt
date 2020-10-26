@@ -12,10 +12,12 @@ $(function () {
     if (data.moduleAddress == -1) {
       // if no module is specified, e.g reset
       for (let address of addrs) {
-        let id = "#module_" + address;
-        $(id).val(data.bladeId);
-        document.getElementById(id.slice(1)).style.color = '#' + data.txtColor;
-        document.getElementById(id.slice(1)).style.background = '#' + data.bgColor;
+        if (addrs.indexOf(address) != -1) {
+          let id = "#module_" + address;
+          $(id).val(data.bladeId);
+          document.getElementById(id.slice(1)).style.color = '#' + data.txtColor;
+          document.getElementById(id.slice(1)).style.background = '#' + data.bgColor;
+        }
       }
     } else {
       // if one module is targeted, eg. static
@@ -44,7 +46,6 @@ $(function () {
   });
 
   socket.on('weather-city', function(data) {
-    console.log(data);
     $('#weatherLocation').val(data.city);
   });
 

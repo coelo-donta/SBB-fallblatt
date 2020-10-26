@@ -104,7 +104,6 @@ module.exports = class Module extends ModuleController {
 
       db.get(sql(e.module.address,e.module.position), [], (err, row) => {
         if (err) { throw err; }
-        console.log(row)
         global.server.io.emit('position', {data: row});
       });
     });
