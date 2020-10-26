@@ -17,19 +17,6 @@ $(function () {
         document.getElementById(id.slice(1)).style.color = '#' + data.txtColor;
         document.getElementById(id.slice(1)).style.background = '#' + data.bgColor;
       }
-    } else if (data.data.moduleAddress == 100) {
-      // if all modules are targetted, e.g. step
-      for (let address of addrs) {
-        // create module id
-        let id = "#module_" + address;
-        // get current position
-        let current = parseInt($(id).val());
-        // set number of blades
-        let blades = (address == "hour" | address == "delay") ? 40 : 62;
-        $(id).val((current+1)%blades);
-        document.getElementById(id.slice(1)).style.color = '#' + data.data.txtColor;
-        document.getElementById(id.slice(1)).style.background = '#' + data.data.bgColor;
-      }
     } else {
       // if one module is targeted, eg. static
       if (addrs.indexOf(data.data.type) != -1) {

@@ -83,6 +83,35 @@ module.exports = class Module extends ModuleController {
     return found;
   }
 
+  step() {
+
+    function sql(address, bladeId) { return `
+      SELECT moduleData.moduleAddress, moduleData.bladeId, moduleData.text, modules.type,
+      moduleData.textColor, moduleData.backgroundColor, txtColor.hexCode AS txtColor,
+      bgColor.hexCode AS bgColor
+      FROM moduleData
+      LEFT JOIN modules ON moduleData.moduleAddress = modules.address
+      LEFT JOIN colors AS txtColor ON moduleData.textColor = txtColor.description
+      LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
+      WHERE is_used = 1 AND moduleAddress = ` + address + ' AND bladeId = ' + bladeId;
+    }
+
+    this.module.forEach(e => {
+      e.module.position++;
+      if (e.module.position >= e.module.bladeCount) {
+        e.module.position = 0;
+      }
+
+      db.get(sql(e.module.address,e.module.position), [], (err, row) => {
+        if (err) { throw err; }
+        console.log(row)
+        global.server.io.emit('position', {data: row});
+      });
+    });
+
+    super.step()
+  }
+
   move(address, position) {
     let sql = `
     SELECT moduleData.moduleAddress, moduleData.bladeId, moduleData.text, modules.type,

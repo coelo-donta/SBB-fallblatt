@@ -37,14 +37,9 @@ module.exports = class ModuleController extends UARTController {
   }
 
   step() {
-    this.position++;
-
-    if (this.position >= this.bladeCount) this.position = 0;
 
     let data = new Buffer.from([0xFF, 0xC6, this.address]);
     UARTController.send(data);
-    // address 100 = send to all
-    global.server.io.emit('position', {data: {moduleAddress: 100}});
   }
 
   move(to) {
