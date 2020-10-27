@@ -72,6 +72,7 @@ module.exports = class Actions {
           }
 
           this.moduleInstance.switchMode('static');
+          this.moduleInstance.light_on = false;
           Module.connectionPromise.then(() => {
           this.initMessage();
 
@@ -115,6 +116,7 @@ module.exports = class Actions {
       vorpal.log(colors.magenta('address\t\t') + this.moduleInstance.module.map(e => e.module.address));
       vorpal.log(colors.magenta('type\t\t') + this.moduleInstance.module.map(e => e.module.type));
       vorpal.log(colors.magenta('mode\t\t') + this.moduleInstance.mode);
+      vorpal.log(colors.magenta('light\t\t') + this.moduleInstance.light_on);
       vorpal.log(colors.magenta('position\t') + this.moduleInstance.module.map(e => e.module.position));
     } else {
       let status = {
@@ -124,6 +126,7 @@ module.exports = class Actions {
         ipAddress: server.ipAddress,
         type: this.moduleInstance.module.map(e => e.module.type),
         mode: this.moduleInstance.mode,
+        light: this.moduleInstance.light_on,
         position: this.moduleInstance.module.map(e => e.module.position),
         address: this.moduleInstance.module.map(e => e.module.address),
       };
@@ -140,11 +143,15 @@ module.exports = class Actions {
     return index;
   }
 
-  static light(status) {
+  static light(status, echo = true) {
     if (!this.isReady) return;
+    if (status == 'state') return this.moduleInstance.light_on;
+
+    this.moduleInstance.light_on = status == 'on' ? true : false;
 
     this.moduleInstance.light(status);
-    vorpal.log(colors.magenta('turned the light to ' + status));
+
+    if (echo) vorpal.log(colors.magenta('turned the light to ' + status));
   }
 
   static reset() {

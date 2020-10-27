@@ -50,6 +50,7 @@ $(function () {
   });
 
   socket.on('status', function(data) {
+    socket.emit('light', {status: data.light ? 'on' : 'off', echo: false})
     if ($('body').hasClass('index')) {
       $('#mode').val(data.mode);
       //$('#module').val(data.position);
@@ -72,6 +73,7 @@ $(function () {
 
       $('#info-type').text(data.type);
       $('#info-mode').text(data.mode);
+      $('#info-light').text(data.light);
       $('#info-position').text(data.position);
     }
 
@@ -96,24 +98,21 @@ $(function () {
     }
   });
 
+  $('body').on('click', '#lightswitch', function () {
+    let switcher = document.getElementById("lightswitch");
+    if (switcher.value == 0) {
+      socket.emit('light', {status: "on"});
+      switcher.value = 1;
+    } else {
+      socket.emit('light', {status: "off"});
+      switcher.value = 0;
+    }
+  });
+
   if ($('body').hasClass('index')) {
     socket.emit('status');
     $('#modules').append('<div class="track-number"><span class="track-title">Gleis</span>1</div>');
     socket.emit('list');
-
-    $('body').on('load', '#lightswitch', function () {
-      socket.emit('light', {status: "off"});
-    });
-    $('body').on('click', '#lightswitch', function () {
-      let switcher = document.getElementById("lightswitch");
-      if (switcher.value == 0) {
-        socket.emit('light', {status: "on"});
-        switcher.value = 1;
-      } else {
-        socket.emit('light', {status: "off"});
-        switcher.value = 0;
-      }
-    });
 
     $('body').on('change', '#mode', function () {
       var mode = $('#mode').val();

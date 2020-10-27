@@ -64,7 +64,7 @@ module.exports = class Server {
       });
 
       client.on('light', (data) => {
-        Actions.light(data.status);
+        Actions.light(data.status, data.echo);
 
         client.emit('light', {status: data.status});
       });
