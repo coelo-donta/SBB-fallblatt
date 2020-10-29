@@ -7,7 +7,17 @@ const https = require('https');
 const Gpio = require('onoff').Gpio;
 const sqlite3 = require('sqlite3').verbose();
 let db = new sqlite3.Database(path.resolve(__dirname, '../config/modules.db'));
-let api_secrets = require('../config/api_secrets.json');
+
+// check if api keys are available
+let has_api_keys = false;
+let api_secrets;
+let api_keys_path = path.resolve(__dirname,'../config/api_secrets.json')
+if (fs.existsSync(api_keys_path)) {
+  api_secrets = require('../config/api_secrets.json');
+  has_api_keys = true;
+} else {
+  vorpal.log(colors.yellow('running without weather'));
+}
 
 // find all types
 let types = [];
@@ -435,6 +445,10 @@ module.exports = class Module extends ModuleController {
   }
 
   weather(location) {
+    if (!has_api_keys) {
+      global.server.io.emit('weather-city', {city: "Missing API key"});
+      return;
+    }
 
     let url = 'https://api.openweathermap.org/data/2.5/weather?q=' + location + '&appid=' +
       api_secrets.api_keys.openweathermap;
