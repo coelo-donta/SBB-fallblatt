@@ -106,7 +106,7 @@ module.exports = class Server {
       });
 
       client.on('schedule', (data) => {
-        Actions.schedule(data.from, data.to);
+        Actions.schedule(data.from, data.to, 'start');
 
         client.emit('schedule', {success: true, status: Actions.status()});
       });

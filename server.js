@@ -113,10 +113,10 @@ vorpal
   });
 
 vorpal
-  .command('schedule <from> <to>')
+  .command('schedule <from> <to> [action]')
   .description('get live schedule')
   .action(function(args, callback) {
-    Actions.schedule(args.from, args.to);
+    Actions.schedule(args.from, args.to, args.action);
     callback();
   });
 

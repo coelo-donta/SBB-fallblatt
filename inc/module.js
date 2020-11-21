@@ -39,6 +39,9 @@ module.exports = class Module extends ModuleController {
     if (mode != "timetable") {
       clearTimeout(this.timetableTimeout);
       clearTimeout(this.timetableTimeoutFirst);
+    } else if (mode != "schedule") {
+      clearTimeout(this.scheduleTimeout);
+      clearTimeout(this.scheduleTimeoutFirst);
     }
     global.server.io.emit('mode', {mode: this.mode});
   }
@@ -334,7 +337,47 @@ module.exports = class Module extends ModuleController {
     return Math.floor(diff / 1000 / 60) + 1;
   }
 
-  schedule(from, to) {
+  schedule(from, to, action) {
+    switch (action) {
+      case 'static':
+        clearTimeout(this.scheduleTimeout);
+        clearTimeout(this.scheduleTimeoutFirst);
+        // show schedule once
+        this.updateSchedule(from, to);
+        this.switchMode('static');
+        break;
+      case 'start':
+        // keep schedule up to date
+        clearTimeout(this.scheduleTimeout);
+        clearTimeout(this.scheduleTimeoutFirst);
+        // display schedule
+        this.updateSchedule(from, to);
+        // update on second 0
+        var seconds = new Date().getSeconds();
+        var diff = 60-seconds;
+        this.scheduleTimeoutFirst = setTimeout(() => {
+          this.displaySchedule(from, to);
+        }, diff*1000);
+        this.switchMode('schedule');
+        break;
+      case 'stop':
+        clearTimeout(this.scheduleTimeout);
+        clearTimeout(this.scheduleTimeoutFirst);
+        this.switchMode('static');
+        break;
+    }
+
+  }
+
+  displaySchedule(from, to) {
+    this.updateSchedule(from, to);
+    // update schedule after every minute
+    this.scheduleTimeout = setTimeout(() => {
+      this.displaySchedule(from, to);
+    }, 60000);
+  }
+
+  updateSchedule(from, to) {
     this.switchMode('schedule');
 
     let url = 'https://transport.opendata.ch' + '/v1/connections?' + 'from=' + from + '&to=' +
