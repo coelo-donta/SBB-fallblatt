@@ -453,7 +453,7 @@ module.exports = class Module extends ModuleController {
     let url = 'https://api.openweathermap.org/data/2.5/weather?q=' + location + '&appid=' +
       api_secrets.api_keys.openweathermap;
 
-    // get schedule
+    // get weather
     let req = https.get(url, res => {
       res.setEncoding('utf8');
       let response = '';
@@ -472,7 +472,7 @@ module.exports = class Module extends ModuleController {
         }
 
         let weather = {};
-        weather.temperature = response.main.temp - 273.15;
+        weather.temperature = Math.round(Math.abs(response.main.temp - 273.15));
         weather.type = response.weather[0].id;
 
         if (weather.temperature >= 0) {
@@ -481,7 +481,11 @@ module.exports = class Module extends ModuleController {
           this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "-");
         }
 
-        this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], Math.round(Math.abs(weather.temperature)));
+        if (weather.temperature == 0) {
+          this.module[types.indexOf("minute")].move(addrs[types.indexOf("minute")], 30);
+        } else {
+          this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], weather.temperature);
+        }
         this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], "&#176")
 
         let weather_symbol = "";
@@ -516,7 +520,7 @@ module.exports = class Module extends ModuleController {
       });
     });
     req.on('error', (err) => {
-      vorpal.log(colors.red('schedule request connection error ' + err));
+      vorpal.log(colors.red('weather request connection error ' + err));
     });
     req.end();
     return ;
