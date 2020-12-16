@@ -515,10 +515,10 @@ module.exports = class Module extends ModuleController {
         }
 
         let weather = {};
-        weather.temperature = Math.round(Math.abs(response.main.temp - 273.15));
+        let temperature_celsius = response.main.temp - 273.15;
+        weather.temperature = Math.round(Math.abs(temperature_celsius));
         weather.type = response.weather[0].id;
-
-        if (weather.temperature >= 0) {
+        if (temperature_celsius >= 0) {
           this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "+");
         } else {
           this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "-");
