@@ -98,7 +98,7 @@ module.exports = class Module extends ModuleController {
 
   step() {
 
-    function sql(address, bladeId) { return `
+    let sql = `
       SELECT moduleData.moduleAddress, moduleData.bladeId, moduleData.text, modules.type,
       moduleData.textColor, moduleData.backgroundColor, txtColor.hexCode AS txtColor,
       bgColor.hexCode AS bgColor
@@ -106,8 +106,7 @@ module.exports = class Module extends ModuleController {
       LEFT JOIN modules ON moduleData.moduleAddress = modules.address
       LEFT JOIN colors AS txtColor ON moduleData.textColor = txtColor.description
       LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
-      WHERE is_used = 1 AND moduleAddress = ` + address + ' AND bladeId = ' + bladeId;
-    }
+      WHERE is_used = 1 AND moduleAddress = ? AND bladeId = ?`
 
     this.module.forEach(e => {
       e.module.position++;
@@ -115,7 +114,7 @@ module.exports = class Module extends ModuleController {
         e.module.position = 0;
       }
 
-      db.get(sql(e.module.address,e.module.position), [], (err, row) => {
+      db.get(sql, [e.module.address, e.module.position], (err, row) => {
         if (err) { throw err; }
         global.server.io.emit('position', {data: row});
       });
@@ -133,10 +132,10 @@ module.exports = class Module extends ModuleController {
     LEFT JOIN modules ON moduleData.moduleAddress = modules.address
     LEFT JOIN colors AS txtColor ON moduleData.textColor = txtColor.description
     LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
-    WHERE moduleAddress = ` + address + ' AND bladeId = ' + position;
+    WHERE moduleAddress = ? AND bladeId = ?`;
 
     let index = addrs.indexOf(address)
-    db.get(sql, [], (err, row) => {
+    db.get(sql, [address, position], (err, row) => {
       if (err) { throw err; }
       row.index = index;
       super.move(row);
