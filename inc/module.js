@@ -181,11 +181,15 @@ module.exports = class Module extends ModuleController {
     var hour = today.getHours();
     var minutes = today.getMinutes();
     var min_position = this.minutesToPosition(minutes);
+
+    var clockMin = types.indexOf("clock_minute") == -1 ? "minute" : "clock_minute";
+    var clockHour = types.indexOf("clock_hour") == -1 ? "hour" : "clock_hour";
+
     // set position
-    this.module[types.indexOf("clock_hour")].module.position = hour;
-    this.module[types.indexOf("clock_minute")].module.position = min_position;
-    this.module[types.indexOf("clock_hour")].move(addrs[types.indexOf("clock_hour")], hour);
-    this.module[types.indexOf("clock_minute")].move(addrs[types.indexOf("clock_minute")], min_position);
+    this.module[types.indexOf(clockHour)].module.position = hour;
+    this.module[types.indexOf(clockMin)].module.position = min_position;
+    this.module[types.indexOf(clockHour)].move(addrs[types.indexOf(clockHour)], hour);
+    this.module[types.indexOf(clockMin)].move(addrs[types.indexOf(clockMin)], min_position);
   }
 
   minutesToPosition(minutes) {
