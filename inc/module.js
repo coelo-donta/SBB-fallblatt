@@ -155,7 +155,7 @@ module.exports = class Module extends ModuleController {
     db.get(sql, [address, address], (err, row) => {
       if (err) { throw err; }
       if(row) {
-	this.move(row.address, position)
+	      this.move(row.address, position)
       }
     });
   }
@@ -221,10 +221,14 @@ module.exports = class Module extends ModuleController {
 
   date() {
     let today = new Date();
-    this.module[types.indexOf("clock_hour")].module.position = today.getMonth() + 1;
-    this.module[types.indexOf("clock_minute")].module.position = this.minutesToPosition(today.getDate());
-    this.module[types.indexOf("clock_hour")].move(addrs[types.indexOf("clock_hour")], today.getMonth() + 1);
-    this.module[types.indexOf("clock_minute")].move(addrs[types.indexOf("clock_minute")], this.minutesToPosition(today.getDate()));
+
+    var dateDay = types.indexOf("clock_minute") == -1 ? "minute" : "clock_minute";
+    var dateMonth = types.indexOf("clock_hour") == -1 ? "hour" : "clock_hour";
+
+    this.module[types.indexOf(dateMonth)].module.position = today.getMonth() + 1;
+    this.module[types.indexOf(dateDay)].module.position = this.minutesToPosition(today.getDate());
+    this.module[types.indexOf(dateMonth)].move(addrs[types.indexOf(dateMonth)], today.getMonth() + 1);
+    this.module[types.indexOf(dateDay)].move(addrs[types.indexOf(dateDay)], this.minutesToPosition(today.getDate()));
   }
 
   timetable(action) {
