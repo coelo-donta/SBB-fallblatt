@@ -80,7 +80,7 @@ module.exports = class Module extends ModuleController {
     return this.messages[this.position];
   }
 
-  find(address, target) {
+  find(address, target, both) {
     var found = false;
     var messageIndex = 0;
 
@@ -91,7 +91,13 @@ module.exports = class Module extends ModuleController {
       }
     });
 
-    if (found) this.move(address, messageIndex);
+    if (found) {
+      if (both) {
+        this.moveBoth(address, messageIndex);
+      } else {
+        this.move(address, messageIndex)
+      }
+    }
 
     return found;
   }
@@ -134,11 +140,21 @@ module.exports = class Module extends ModuleController {
     LEFT JOIN colors AS bgColor ON moduleData.backgroundColor = bgColor.description
     WHERE moduleAddress = ? AND bladeId = ?`;
 
-    let index = addrs.indexOf(address)
+    let index = addrs.indexOf(address);
     db.get(sql, [address, position], (err, row) => {
       if (err) { throw err; }
       row.index = index;
       super.move(row);
+    });
+  }
+
+  moveBoth(address, position) {
+    this.move(address, position);
+    let sql = `SELECT * FROM modules WHERE
+      type = (SELECT type FROM modules WHERE address = ?) AND address <> ?`;
+    db.get(sql, [address, address], (err, row) => {
+      if (err) { throw err; }
+      this.move(row.address, position)
     });
   }
 
@@ -317,12 +333,12 @@ module.exports = class Module extends ModuleController {
     console.log(timetable.timetable[next_index]);
 
     // display timetable
-    this.module[types.indexOf("minute")].move(addrs[types.indexOf("minute")], this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
-    this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], timetable.timetable[next_index].hour);
-    this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], timetable.timetable[next_index].delay);
-    this.module[types.indexOf("train")].find(addrs[types.indexOf("train")], timetable.timetable[next_index].train);
-    this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], timetable.timetable[next_index].via);
-    this.module[types.indexOf("destination")].find(addrs[types.indexOf("destination")], timetable.timetable[next_index].destination);
+    this.module[types.indexOf("minute")].moveBoth(addrs[types.indexOf("minute")], this.minutesToPosition(parseInt(timetable.timetable[next_index].minute)));
+    this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], timetable.timetable[next_index].hour, true);
+    this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], timetable.timetable[next_index].delay, true);
+    this.module[types.indexOf("train")].find(addrs[types.indexOf("train")], timetable.timetable[next_index].train, true);
+    this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], timetable.timetable[next_index].via, true);
+    this.module[types.indexOf("destination")].find(addrs[types.indexOf("destination")], timetable.timetable[next_index].destination, true);
 
     let next_schedule_minutes = timetable.timetable[next_index].minute;
     let next_schedule_hours = timetable.timetable[next_index].hour;
@@ -399,11 +415,11 @@ module.exports = class Module extends ModuleController {
         // handle response
         // reset if nothing found
         if (response.hasOwnProperty("errors")) {
-          addrs.forEach(e => this.module[addrs.indexOf(e)].move(e, 0));
+          addrs.forEach(e => this.module[addrs.indexOf(e)].moveBoth(e, 0));
           vorpal.log(colors.red(response.errors[0].message));
           return;
         } else if (response.connections.length == 0) {
-          addrs.forEach(e => this.module[addrs.indexOf(e)].move(e, 0));
+          addrs.forEach(e => this.module[addrs.indexOf(e)].moveBoth(e, 0));
           vorpal.log(colors.red("No connection found"));
           return;
         };
@@ -424,27 +440,27 @@ module.exports = class Module extends ModuleController {
         console.log(schedule);
         let found = [];
         // display time
-        found.push(this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], schedule.hour));
+        found.push(this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], schedule.hour, true));
         if (schedule.minute == 0) {
-          found.push(this.module[types.indexOf("minute")].move(addrs[types.indexOf("minute")], 30));
+          found.push(this.module[types.indexOf("minute")].moveBoth(addrs[types.indexOf("minute")], 30));
         } else {
-          found.push(this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], schedule.minute));
+          found.push(this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], schedule.minute, true));
         }
         // display delay
         // display delay in minute
         if (typeof(schedule.delay) == 'number') {
           schedule.delay = 'ca ' + schedule.delay + [(schedule.delay > 1) ? ' Minuten' : ' Minute'] + ' später';
-          found.push(this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], schedule.delay));
+          found.push(this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], schedule.delay, true));
         // display cancellation
         } else if (false) {
           // todo
-          found.push(this.find(2, 'Ausfall'));
+          found.push(this.find(2, 'Ausfall', true));
         // display unknown delay
         } else if (false) {
           // todo
-          found.push(this.find(2, 'Ausfall'));
+          found.push(this.find(2, 'Ausfall', true));
         }else {
-          this.module[types.indexOf("delay")].move(addrs[types.indexOf("delay")], 0);
+          this.module[types.indexOf("delay")].moveBoth(addrs[types.indexOf("delay")], 0);
           found.push(true);
         }
         // display train type (or connections.sections[0].journey.category)
@@ -468,16 +484,16 @@ module.exports = class Module extends ModuleController {
         if (connections.from.platform != null && connections.from.platform.indexOf('!') >= 0) {
           schedule.train = 'Gleisänderung';
         }
-        found.push(this.module[types.indexOf("train")].find(addrs[types.indexOf("train")], schedule.train));
+        found.push(this.module[types.indexOf("train")].find(addrs[types.indexOf("train")], schedule.train, true));
         // display via
         schedule.via = this.module[types.indexOf("via")].module.messages.filter(e => schedule.vias.includes(e));
-        found.push(this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], schedule.via[0]));
+        found.push(this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], schedule.via[0], true));
         // display destination
-        found.push(this.module[types.indexOf("destination")].find(addrs[types.indexOf("destination")], schedule.destination));
+        found.push(this.module[types.indexOf("destination")].find(addrs[types.indexOf("destination")], schedule.destination, true));
         // set all modules to 0 where nothing found
         for (let i = 0; i <= found.length; i++) {
           if (found[i] == false) {
-            this.module[addrs.indexOf(i)].move(addrs[i], 0)
+            this.module[addrs.indexOf(i)].moveBoth(addrs[i], 0)
           };
         };
 
@@ -512,7 +528,7 @@ module.exports = class Module extends ModuleController {
         // handle response
         // reset if nothing found
         if (response.cod != 200) {
-          addrs.forEach(e => this.move(e, 0));
+          addrs.forEach(e => this.moveBoth(e, 0));
           vorpal.log(colors.red(response.message));
           return;
         }
@@ -522,17 +538,17 @@ module.exports = class Module extends ModuleController {
         weather.temperature = Math.round(Math.abs(temperature_celsius));
         weather.type = response.weather[0].id;
         if (temperature_celsius >= 0) {
-          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "+");
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "+", true);
         } else {
-          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "-");
+          this.module[types.indexOf("hour")].find(addrs[types.indexOf("hour")], "-", true);
         }
 
         if (weather.temperature == 0) {
-          this.module[types.indexOf("minute")].move(addrs[types.indexOf("minute")], 30);
+          this.module[types.indexOf("minute")].moveBoth(addrs[types.indexOf("minute")], 30);
         } else {
-          this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], weather.temperature);
+          this.module[types.indexOf("minute")].find(addrs[types.indexOf("minute")], weather.temperature, true);
         }
-        this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], "&#176")
+        this.module[types.indexOf("delay")].find(addrs[types.indexOf("delay")], "&#176", true)
 
         let weather_symbol = "";
         if (weather.type < 300) { // thunderstorm
@@ -554,11 +570,11 @@ module.exports = class Module extends ModuleController {
         } else if (weather.type > 802) { // clouds
           weather_symbol = "&#9729";
         }
-        this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], weather_symbol);
+        this.module[types.indexOf("via")].find(addrs[types.indexOf("via")], weather_symbol, true);
 
         // set all modules to 0 where nothing found
-        this.module[types.indexOf("train")].move(addrs[types.indexOf("train")], 0);
-        this.module[types.indexOf("destination")].move(addrs[types.indexOf("destination")], 0);
+        this.module[types.indexOf("train")].moveBoth(addrs[types.indexOf("train")], 0);
+        this.module[types.indexOf("destination")].moveBoth(addrs[types.indexOf("destination")], 0);
 
         let city = response.name + ", " + response.sys.country;
         vorpal.log(colors.magenta('displaying live weather of ' + city));

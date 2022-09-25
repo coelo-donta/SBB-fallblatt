@@ -86,8 +86,9 @@ $(function () {
       var select = $('<option value="' + index + '">' + ((message.length == 0) ? '–' : message) + '</option>');
       input.append(select);
     });
-
-    $('#modules').append(input);
+    if (!document.getElementById("module_" + data.type)) {
+      $('#modules').append(input);
+    }
   });
 
   socket.on('load_positions', function(data) {
