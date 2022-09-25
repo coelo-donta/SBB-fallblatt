@@ -154,7 +154,9 @@ module.exports = class Module extends ModuleController {
       type = (SELECT type FROM modules WHERE address = ?) AND address <> ?`;
     db.get(sql, [address, address], (err, row) => {
       if (err) { throw err; }
-      this.move(row.address, position)
+      if(row) {
+	this.move(row.address, position)
+      }
     });
   }
 
