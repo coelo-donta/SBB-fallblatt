@@ -77,6 +77,7 @@ module.exports = class Server {
 
       client.on('move', (data) => {
         Actions.move(addrs[types.indexOf(data.address)], data.destination, data.echo);
+        Actions.move(addrs[types.lastIndexOf(data.address)], data.destination, data.echo);
 
         client.emit('move', {success: true, status: Actions.status()});
       });
